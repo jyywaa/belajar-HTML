@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MochiShop - Belanja & Makanan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', Arial, sans-serif; }
+        body { background: #fff0f6; padding-bottom: 70px; color: #333; }
+        
+        :root {
+            --pink: #ff4da6;
+            --pink-muda: #ffb3d9;
+            --pink-tua: #e60073;
+            --putih: #ffffff;
+        }
+
+        .page { display: none; }
+        .page:target { display: block; }
+        #home { display: block; }
+        .page:target ~ #home { display: none; }
+
+        /* HEADER */
+        header { background: var(--pink); color: white; padding: 12px 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: bold; }
+        .back-btn, .icon { color: white; text-decoration: none; font-size: 22px; }
+
+        /* SEARCH */
+        .search { background: var(--pink); padding: 0 15px 12px 15px; }
+        .search input { width: 100%; padding: 10px 15px; border-radius: 20px; border: none; outline: none; }
+
+        /* PROFILE */
+        .profile-bar { background: linear-gradient(135deg, var(--pink), var(--pink-muda)); padding: 20px 15px; display: flex; align-items: center; gap: 12px; color: white; }
+        .avatar { width: 55px; height: 55px; border-radius: 50%; background: white; border: 3px solid white; overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* TAB KATEGORI */
+        .kategori-tab { display: flex; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .tab { flex: 1; text-align: center; padding: 14px; font-weight: bold; color: #777; border-bottom: 3px solid transparent; cursor: pointer; }
+        .tab.active { color: var(--pink); border-bottom: 3px solid var(--pink); }
+
+        /* SUB KATEGORI */
+        .sub-kategori { display: flex; gap: 10px; padding: 10px 15px; background: white; overflow-x: auto; }
+        .sub-btn { padding: 8px 14px; background: #ffe6f2; color: var(--pink-tua); border-radius: 20px; font-size: 12px; white-space: nowrap; border: none; }
+
+        .banner { background: var(--pink-muda); color: var(--pink-tua); text-align: center; padding: 12px; font-weight: bold; margin: 10px; border-radius: 12px; }
+
+        /* MENU */
+        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 15px; background: white; text-align: center; border-radius: 12px; margin: 10px; }
+        .menu-item { font-size: 12px; color: #333; text-decoration: none; }
+        .menu-item div { font-size: 28px; margin-bottom: 5px; }
+
+        /* PRODUK */
+        .container { padding: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .card { background: white; border-radius: 15px; overflow: hidden; text-decoration: none; color: black; box-shadow: 0 3px 10px rgba(255,77,166,0.15); }
+        .card img { width: 100%; height: 170px; object-fit: cover; }
+        .card-info { padding: 10px; }
+        .diskon { background: var(--pink); color: white; font-size: 10px; padding: 3px 6px; border-radius: 6px; font-weight: bold; }
+        .card h3 { font-size: 13px; height: 34px; overflow: hidden; margin: 6px 0; }
+        .harga { display: flex; gap: 6px; align-items: center; }
+        .harga-baru { color: var(--pink); font-weight: bold; font-size: 15px; }
+        .harga-lama { text-decoration: line-through; color: #999; font-size: 11px; }
+        .rating { font-size: 11px; color: #ff9900; }
+
+        /* DETAIL */
+        .detail img { width: 100%; height: 320px; object-fit: cover; }
+        .detail-info { padding: 15px; background: white; margin-bottom: 70px; border-radius: 20px 20px 0 0; margin-top: -20px; position: relative; }
+        .detail-harga { color: var(--pink); font-size: 26px; font-weight: bold; }
+        .bar-bawah { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 10px 15px; border-top: 1px solid #eee; display: flex; gap: 10px; }
+        .btn-keranjang { flex: 1; background: white; color: var(--pink); border: 2px solid var(--pink); padding: 14px; border-radius: 25px; font-weight: bold; text-align: center; }
+        .btn-beli { flex: 1; background: var(--pink); color: white; border: none; padding: 14px; border-radius: 25px; font-weight: bold; text-align: center; text-decoration: none; }
+
+        /* KOMENTAR */
+        .komentar-box { background: white; padding: 15px; margin: 10px; border-radius: 12px; }
+        .komentar { display: flex; gap: 10px; margin-bottom: 12px; }
+        .komentar img { width: 35px; height: 35px; border-radius: 50%; }
+
+        /* KERANJANG & CHECKOUT */
+        .box { background: white; padding: 15px; margin: 10px; border-radius: 12px; }
+        .item-keranjang { display: flex; gap: 10px; margin-bottom: 12px; }
+        .item-keranjang img { width: 65px; height: 65px; border-radius: 10px; object-fit: cover; }
+        .total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: var(--pink); }
+        .btn-bayar { width: 100%; background: var(--pink); color: white; border: none; padding: 14px; border-radius: 25px; font-weight: bold; font-size: 16px; }
+        
+        /* SETTING */
+        .setting-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f0f0f0; }
+    </style>
+</head>
+<body>
+
+    <!-- LAYAR SETTING -->
+    <div class="page" id="setting">
+        <header><div class="navbar"><a href="#home" class="back-btn">←</a><div class="logo">Pengaturan</div><div></div></div></header>
+        <div class="box">
+            <div class="setting-item"><span>👤 Akun Saya</span><span>></span></div>
+            <div class="setting-item"><span>📍 Alamat Pengiriman</span><span>></span></div>
+            <div class="setting-item"><span>💳 Metode Pembayaran</span><span>></span></div>
+            <div class="setting-item"><span>🔔 Notifikasi</span><span>></span></div>
+            <div class="setting-item"><span>❓ Pusat Bantuan</span><span>></span></div>
+            <div class="setting-item"><span>🚪 Keluar</span><span>></span></div>
+        </div>
+    </div>
+
+    <!-- LAYAR CHECKOUT -->
+    <div class="page" id="checkout">
+        <header><div class="navbar"><a href="#keranjang" class="back-btn">←</a><div class="logo">Checkout</div><div></div></div></header>
+        <div class="box"><h3>📍 Alamat Pengiriman</h3><p><b>Mochi</b> | 0812-3456<br>Semarang, Jawa Tengah</p></div>
+        <div class="box"><h3>🚚 Opsi Pengiriman</h3><p>✅ J&T Express - Rp 12.000<br>✅ GoSend - Rp 18.000</p></div>
+        <div class="box"><h3>💳 Pembayaran</h3><p>✅ COD<br>✅ MochiPay</p></div>
+        <div class="box total"><span>Total Bayar</span><span>Rp 107.000</span></div>
+        <div style="padding:10px;"><button class="btn-bayar" onclick="alert('Pesanan MochiShop Berhasil!')">Bayar Sekarang</button></div>
+    </div>
+
+    <!-- LAYAR KERANJANG -->
+    <div class="page" id="keranjang">
+        <header><div class="navbar"><a href="#home" class="back-btn">←</a><div class="logo">Keranjang</div><div></div></div></header>
+        <div class="box">
+            <div class="item-keranjang"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100"><div><h4>Cardigan Pink Knit</h4><p class="harga-baru">Rp 89.000</p></div></div>
+            <div class="item-keranjang"><img src="https://images.unsplash.com/photo-1551024601-bec78aea095b?w=100"><div><h4>Es Kopi Susu Mochi</h4><p class="harga-baru">Rp 18.000</p></div></div>
+        </div>
+        <div style="padding:10px;"><a href="#checkout" class="btn-bayar">Checkout (2 Barang)</a></div>
+    </div>
+
+    <!-- DETAIL PRODUK -->
+    <div class="page" id="detail1">
+        <header><div class="navbar"><a href="#home" class="back-btn">←</a><div class="logo">Detail Produk</div><a href="#keranjang" class="icon">🛒</a></div></header>
+        <div class="detail">
+            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600">
+            <div class="detail-info">
+                <span class="diskon">Diskon 25%</span>
+                <h2>Cardigan Pink Knit Premium</h2>
+                <div class="harga"><span class="detail-harga">Rp 89.000</span><span class="harga-lama">Rp 120.000</span></div>
+                <div class="rating">⭐ 4.9 | Terjual 2.1rb</div>
+                <p style="margin-top:10px;">Bahan rajut premium, tebal dan hangat. Cocok untuk outfit daily Mochi!</p>
+            </div>
+            <!-- KOMENTAR -->
+            <div class="komentar-box">
+                <h3>Komentar</h3>
+                <div class="komentar"><img src="https://i.pravatar.cc/40?1"><div><b>Ana</b><br>Bahannya bagus banget, sesuai gambar!</div></div>
+                <div class="komentar"><img src="https://i.pravatar.cc/40?2"><div><b>Sari</b><br>Warnanya pinknya cantik. Recommended</div></div>
+            </div>
+        </div>
+        <div class="bar-bawah"><a href="#keranjang" class="btn-keranjang">+ Keranjang</a><a href="#checkout" class="btn-beli">Beli Sekarang</a></div>
+    </div>
+
+    <div class="page" id="detail2">
+        <header><div class="navbar"><a href="#home" class="back-btn">←</a><div class="logo">Detail Produk</div><a href="#keranjang" class="icon">🛒</a></div></header>
+        <div class="detail">
+            <img src="https://images.unsplash.com/photo-1551024601-bec78aea095b?w=600">
+            <div class="detail-info">
+                <span class="diskon">Gratis Ongkir</span>
+                <h2>Es Kopi Susu Mochi</h2>
+                <div class="harga"><span class="detail-harga">Rp 18.000</span><span class="harga-lama">Rp 25.000</span></div>
+                <div class="rating">⭐ 4.8 | Terjual 5.3rb</div>
+                <p style="margin-top:10px;">Kopi robusta + susu creamy + boba kenyal. Segar banget!</p>
+            </div>
+            <div class="komentar-box">
+                <h3>Komentar</h3>
+                <div class="komentar"><img src="https://i.pravatar.cc/40?3"><div><b>Budi</b><br>Bobanya kenyal, kopinya nampol!</div></div>
+            </div>
+        </div>
+        <div class="bar-bawah"><a href="#keranjang" class="btn-keranjang">+ Keranjang</a><a href="#checkout" class="btn-beli">Pesan Sekarang</a></div>
+    </div>
+
+    <!-- HOME -->
+    <div class="page" id="home">
+        <div class="profile-bar">
+            <div class="avatar"><img src="https://i.pravatar.cc/100?u=mochi-pink" alt="Mochi"></div>
+            <div><b>Halo, Mochi!</b><br><small>Selamat Datang di MochiShop 🍡</small></div>
+        </div>
+
+        <header><div class="navbar"><div class="logo">MochiShop</div><a href="#setting" class="icon">⚙️</a></div></header>
+        <div class="search"><input type="text" placeholder="Cari baju, makanan, minuman..."></div>
+
+        <div class="kategori-tab">
+            <div class="tab active">MochiShop</div>
+            <div class="tab">MochiFood</div>
+        </div>
+
+        <!-- SUB KATEGORI MOCHISHOP -->
+        <div class="sub-kategori">
+            <button class="sub-btn">Baju</button><button class="sub-btn">Sweater</button><button class="sub-btn">Cardigan</button>
+            <button class="sub-btn">Blouse</button><button class="sub-btn">Jeans</button><button class="sub-btn">Polo</button>
+            <button class="sub-btn">T-Shirt</button><button class="sub-btn">Celana</button>
+        </div>
+
+        <div class="banner">🎉 FLASH SALE 9.9 - DISKON UP TO 90% 🎉</div>
+
+        <div class="menu-grid">
+            <a href="#" class="menu-item"><div>👗</div> MochiShop</a>
+            <a href="#" class="menu-item"><div>🍔</div> MochiFood</a>
+            <a href="#" class="menu-item"><div>🎟️</div> Voucher</a>
+            <a href="#" class="menu-item"><div>🚚</div> Gratis Ongkir</a>
+        </div>
+
+        <h2 style="padding:15px 15px 5px 15px;">Rekomendasi Untuk Mochi</h2>
+        <div class="container">
+            <div class="grid">
+                <!-- MOCHISHOP -->
+                <a href="#detail1" class="card"><img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"><div class="card-info"><span class="diskon">25% OFF</span><h3>Cardigan Pink Knit</h3><div class="harga"><span class="harga-baru">Rp 89.000</span><span class="harga-lama">Rp 120.000</span></div><div class="rating">⭐ 4.9</div></div></a>
+                <a href="#detail1" class="card"><img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=400"><div class="card-info"><span class="diskon">15% OFF</span><h3>Blouse Pink Ceruti</h3><div class="harga"><span class="harga-baru">Rp 75.000</span><span class="harga-lama">Rp 90.000</span></div><div class="rating">⭐ 4.8</div></div></a>
+                <a href="#detail1" class="card"><img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400"><div class="card-info"><span class="diskon">20% OFF</span><h3>Jeans Pink Slimfit</h3><div class="harga"><span class="harga-baru">Rp 110.000</span><span class="harga-lama">Rp 138.000</span></div><div class="rating">⭐ 4.9</div></div></a>
+                <a href="#detail1" class="card"><img src="https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=400"><div class="card-info"><span class="diskon">10% OFF</span><h3>Polo Premium Pink</h3><div class="harga"><span class="harga-baru">Rp 135.000</span><span class="harga-lama">Rp 150.000</span></div><div class="rating">⭐ 4.7</div></div></a>
+                
+                <!-- MOCHIFOOD -->
+                <a href="#detail2" class="card"><img src="https://images.unsplash.com/photo-1551024601-bec78aea095b?w=400"><div class="card-info"><span class="diskon">28% OFF</span><h3>Es Kopi Susu Mochi</h3><div class="harga"><span class="harga-baru">Rp 18.000</span><span class="harga-lama">Rp 25.000</span></div><div class="rating">⭐ 4.8</div></div></a>
+                <a href="#detail2" class="card"><img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400"><div class="card-info"><span class="diskon">B1G1</span><h3>Cake Mochi Coklat</h3><div class="harga"><span class="harga-baru">Rp 35.000</span><span class="harga-lama">Rp 50.000</span></div><div class="rating">⭐ 4.9</div></div></a>
+                <a href="#detail2" class="card"><img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400"><div class="card-info"><span class="diskon">Gratis Ongkir</span><h3>Pancake Strawberry</h3><div class="harga"><span class="harga-baru">Rp 22.000</span><span class="harga-lama">Rp 30.000</span></div><div class="rating">⭐ 4.8</div></div></a>
+                <a href="#detail2" class="card"><img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400"><div class="card-info"><span class="diskon">15% OFF</span><h3>Nasi Goreng Spesial</h3><div class="harga"><span class="harga-baru">Rp 20.000</span><span class="harga-lama">Rp 24.000</span></div><div class="rating">⭐ 4.7</div></div></a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
