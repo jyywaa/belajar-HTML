@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOKO ONLINE</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f5f5f5; }
+        
+        /* SISTEM 2 LAYAR */
+        .page { display: none; }
+        .page:target { display: block; }
+        #home { display: block; }
+        .page:target ~ #home { display: none; }
+
+        /* HEADER ORANGE KAYA SHOPEE */
+        header { background: #ee4d2d; color: white; padding: 12px 15px; position: sticky; top: 0; z-index: 100; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; }
+        .navbar h1 { font-size: 18px; font-weight: bold; }
+        .back-btn { color: white; text-decoration: none; font-size: 22px; }
+        .icon-keranjang { font-size: 22px; }
+
+        /* LAYAR 1: DAFTAR PRODUK */
+        .container { padding: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .card { background: white; border-radius: 8px; overflow: hidden; text-decoration: none; color: black; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-info { padding: 10px; }
+        .card h3 { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        .card p { color: #ee4d2d; font-weight: bold; font-size: 15px; }
+
+        /* LAYAR 2: DETAIL PRODUK */
+        .detail img { width: 100%; height: 350px; object-fit: cover; }
+        .detail-info { padding: 15px; background: white; }
+        .detail-info h2 { font-size: 18px; margin-bottom: 8px; }
+        .detail-harga { color: #ee4d2d; font-size: 22px; font-weight: bold; margin-bottom: 15px; }
+        .detail-desc { color: #555; line-height: 1.6; margin-bottom: 80px; }
+        
+        /* BAR BAWAH FIXED */
+        .bar-bawah { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 10px 15px; border-top: 1px solid #ddd; display: flex; gap: 10px; }
+        .btn-beli { flex: 1; background: #ee4d2d; color: white; border: none; padding: 14px; border-radius: 5px; font-weight: bold; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <!-- LAYAR 2: DETAIL KAOS -->
+    <div class="page" id="detail1">
+        <header><div class="navbar"><a href="#home" class="back-btn">←</a><h1>Detail Produk</h1><div class="icon-keranjang">🛒</div></div></header>
+        <div class="detail">
+            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600" alt="Kaos">
+            <div class="detail-info">
+                <h2>Kaos Polos Premium</h2>
+                <div class="detail-harga">Rp 89.000</div>
+                <div class="detail-desc">
+                    Bahan: Cotton Combed 30s premium<br>
+                    Ukuran: S, M, L, XL, XXL<br>
+                    Warna: Putih<br>
+                    Kaos tebal, adem, tidak mudah melar. Cocok untuk harian.
+                </div>
+            </div>
+        </div>
+        <div class="bar-bawah"><button class="btn-beli">Beli Sekarang</button></div>
+    </div>
+
+    <!-- LAYAR 2: DETAIL SEPATU -->
+    <div class="page" id="detail2">
+        <header><div class="navbar"><a href="#home" class="back-btn">←</a><h1>Detail Produk</h1><div class="icon-keranjang">🛒</div></div></header>
+        <div class="detail">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600" alt="Sepatu">
+            <div class="detail-info">
+                <h2>Sepatu Sneakers Casual</h2>
+                <div class="detail-harga">Rp 249.000</div>
+                <div class="detail-desc">
+                    Bahan: Kain kanvas + sol karet<br>
+                    Ukuran: 38 - 44<br>
+                    Warna: Putih<br>
+                    Nyaman dipakai, ringan, desain kekinian.
+                </div>
+            </div>
+        </div>
+        <div class="bar-bawah"><button class="btn-beli">Beli Sekarang</button></div>
+    </div>
+
+    <!-- LAYAR 2: DETAIL TOPI -->
+    <div class="page" id="detail3">
+        <header><div class="navbar"><a href="#home" class="back-btn">←</a><h1>Detail Produk</h1><div class="icon-keranjang">🛒</div></div></header>
+        <div class="detail">
+            <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600" alt="Topi">
+            <div class="detail-info">
+                <h2>Topi Baseball Polos</h2>
+                <div class="detail-harga">Rp 65.000</div>
+                <div class="detail-desc">
+                    Bahan: Katun twill<br>
+                    Ukuran: All Size<br>
+                    Warna: Hitam<br>
+                    Cocok untuk olahraga dan gaya kasual.
+                </div>
+            </div>
+        </div>
+        <div class="bar-bawah"><button class="btn-beli">Beli Sekarang</button></div>
+    </div>
+
+
+    <!-- LAYAR 1: HALAMAN UTAMA -->
+    <div class="page" id="home">
+        <header><div class="navbar"><h1>TOKO ONLINE</h1><div class="icon-keranjang">🛒</div></div></header>
+        
+        <div class="container">
+            <div class="grid">
+                <!-- PRODUK 1 -->
+                <a href="#detail1" class="card">
+                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400" alt="Kaos">
+                    <div class="card-info">
+                        <h3>Kaos Polos Premium</h3>
+                        <p>Rp 89.000</p>
+                    </div>
+                </a>
+
+                <!-- PRODUK 2 -->
+                <a href="#detail2" class="card">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" alt="Sepatu">
+                    <div class="card-info">
+                        <h3>Sepatu Sneakers</h3>
+                        <p>Rp 249.000</p>
+                    </div>
+                </a>
+
+                <!-- PRODUK 3 -->
+                <a href="#detail3" class="card">
+                    <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400" alt="Topi">
+                    <div class="card-info">
+                        <h3>Topi Baseball</h3>
+                        <p>Rp 65.000</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
