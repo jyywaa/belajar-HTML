@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MochiShop</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', Arial, sans-serif; }
+        body { background: #fff0f6; padding-bottom: 70px; }
+        :root { --pink: #ff4da6; --pink-muda: #ffb3d9; --pink-tua: #e60073; }
+
+     .page { display: none; }
+     .page.active { display: block; }
+        header { background: var(--pink); color: white; padding: 12px 15px; position: sticky; top: 0; z-index: 100; }
+     .navbar { display: flex; justify-content: space-between; align-items: center; }
+     .logo { font-size: 20px; font-weight: bold; }
+     .icon { font-size: 22px; text-decoration: none; color: white; cursor: pointer; }
+     .search { background: var(--pink); padding: 0 15px 12px 15px; }
+     .search input { width: 100%; padding: 10px 15px; border-radius: 20px; border: none; }
+     .profile-bar { background: linear-gradient(135deg, var(--pink), var(--pink-muda)); padding: 20px 15px; display: flex; align-items: center; gap: 12px; color: white; }
+     .avatar { width: 55px; height: 55px; border-radius: 50%; background: white; border: 3px solid white; overflow: hidden; }
+     .avatar img { width: 100%; height: 100%; object-fit: cover; }
+     .kategori-tab { display: flex; background: white; }
+     .tab { flex: 1; text-align: center; padding: 14px; font-weight: bold; color: #777; border-bottom: 3px solid transparent; cursor: pointer; }
+     .tab.active { color: var(--pink); border-bottom: 3px solid var(--pink); }
+     .sub-kategori { display: flex; gap: 10px; padding: 10px 15px; background: white; overflow-x: auto; }
+     .sub-btn { padding: 8px 14px; background: #ffe6f2; color: var(--pink-tua); border-radius: 20px; font-size: 12px; white-space: nowrap; border: none; }
+     .banner { background: var(--pink-muda); color: var(--pink-tua); text-align: center; padding: 12px; font-weight: bold; margin: 10px; border-radius: 12px; }
+     .container { padding: 10px; }
+     .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+     .card { background: white; border-radius: 15px; overflow: hidden; text-decoration: none; color: black; box-shadow: 0 3px 10px rgba(255,77,166,0.15); cursor: pointer; }
+     .card img { width: 100%; height: 170px; object-fit: cover; }
+     .card-info { padding: 10px; }
+     .diskon { background: var(--pink); color: white; font-size: 10px; padding: 3px 6px; border-radius: 6px; font-weight: bold; }
+     .card h3 { font-size: 13px; height: 34px; overflow: hidden; margin: 6px 0; }
+     .harga-baru { color: var(--pink); font-weight: bold; font-size: 15px; }
+     .harga-lama { text-decoration: line-through; color: #999; font-size: 11px; }
+     .rating { font-size: 11px; color: #ff9900; }
+     .detail img { width: 100%; height: 320px; object-fit: cover; }
+     .detail-info { padding: 15px; background: white; margin-bottom: 70px; border-radius: 20px 20px 0 0; margin-top: -20px; }
+     .detail-harga { color: var(--pink); font-size: 26px; font-weight: bold; }
+     .bar-bawah { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 10px 15px; border-top: 1px solid #eee; display: flex; gap: 10px; }
+     .btn-keranjang { flex: 1; background: white; color: var(--pink); border: 2px solid var(--pink); padding: 14px; border-radius: 25px; font-weight: bold; text-align: center; }
+     .btn-beli { flex: 1; background: var(--pink); color: white; border: none; padding: 14px; border-radius: 25px; font-weight: bold; text-align: center; }
+     .komentar-box { background: white; padding: 15px; margin: 10px; border-radius: 12px; }
+     .komentar { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
+     .komentar img { width: 35px; height: 35px; border-radius: 50%; }
+     .box { background: white; padding: 15px; margin: 10px; border-radius: 12px; }
+     .setting-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- LAYAR SETTING -->
+    <div class="page" id="setting">
+        <header><div class="navbar"><span class="icon" onclick="showPage('home')">←</span><div class="logo">Pengaturan</div><div></div></div></header>
+        <div class="box">
+            <div class="setting-item" onclick="alert('Fitur Akun Mochi')"><span>👤 Akun Saya</span><span>></span></div>
+            <div class="setting-item" onclick="alert('Fitur Alamat')"><span>📍 Alamat Pengiriman</span><span>></span></div>
+            <div class="setting-item" onclick="alert('Fitur Pembayaran')"><span>💳 Metode Pembayaran</span><span>></span></div>
+            <div class="setting-item" onclick="alert('Fitur Notifikasi')"><span>🔔 Notifikasi</span><span>></span></div>
+            <div class="setting-item" onclick="alert('Fitur Bantuan')"><span>❓ Pusat Bantuan</span><span>></span></div>
+            <div class="setting-item" onclick="alert('Keluar')"><span>🚪 Keluar</span><span>></span></div>
+        </div>
+    </div>
+
+    <!-- DETAIL PRODUK -->
+    <div class="page" id="detail">
+        <header><div class="navbar"><span class="icon" onclick="showPage('home')">←</span><div class="logo">Detail Produk</div><span class="icon" onclick="alert('Keranjang')">🛒</span></div></header>
+        <div class="detail">
+            <img id="detail-img" src="">
+            <div class="detail-info">
+                <span class="diskon" id="detail-diskon"></span>
+                <h2 id="detail-nama"></h2>
+                <div><span class="detail-harga" id="detail-harga"></span> <span class="harga-lama" id="detail-hargaLama"></span></div>
+                <div class="rating" id="detail-rating"></div>
+                <p style="margin-top:10px;" id="detail-desc"></p>
+            </div>
+            <div class="komentar-box">
+                <h3>Komentar</h3>
+                <div class="komentar"><img src="https://i.pravatar.cc/40?u=karina"><div><b>Karina</b><br>Bahannya bagus banget, sesuai gambar! Warnanya pinknya cantik 🥰</div></div>
+                <div class="komentar"><img src="https://i.pravatar.cc/40?u=rindi"><div><b>Rindi</b><br>Packing rapi dan cepet banget sampai. Recommended!</div></div>
+                <div class="komentar"><img src="https://i.pravatar.cc/40?u=niel"><div><b>Niel</b><br>Ukuran pas, gak kekecilan. Bakal order lagi</div></div>
+                <div class="komentar"><img src="https://i.pravatar.cc/40?u=carmen"><div><b>Carmen</b><br>Enak banget! Porsinya banyak dan murah 😋</div></div>
+            </div>
+        </div>
+        <div class="bar-bawah"><button class="btn-keranjang">+ Keranjang</button><button class="btn-beli">Beli Sekarang</button></div>
+    </div>
+
+    <!-- HOME -->
+    <div class="page active" id="home">
+        <div class="profile-bar">
+            <div class="avatar"><img src="https://i.pravatar.cc/100?u=mochi-pink" alt="Mochi"></div>
+            <div><b>Halo, Mochi!</b><br><small>Selamat Datang di MochiShop 🍡</small></div>
+        </div>
+
+        <header><div class="navbar"><div class="logo">MochiShop</div><span class="icon" onclick="showPage('setting')">⚙️</span></div></header>
+        <div class="search"><input type="text" id="searchInput" onkeyup="cariProduk()" placeholder="Cari baju, makanan, minuman..."></div>
+
+        <div class="kategori-tab">
+            <div class="tab active" onclick="switchTab('outfit')">MochiOutfit</div>
+            <div class="tab" onclick="switchTab('food')">MochiFood</div>
+        </div>
+
+        <div class="sub-kategori" id="subOutfit">
+            <button class="sub-btn">Baju</button><button class="sub-btn">Sweater</button><button class="sub-btn">Cardigan</button>
+            <button class="sub-btn">Blouse</button><button class="sub-btn">Jeans</button><button class="sub-btn">Polo Premium</button>
+            <button class="sub-btn">T-Shirt</button><button class="sub-btn">Celana</button>
+        </div>
+        <div class="sub-kategori" id="subFood" style="display:none;">
+            <button class="sub-btn">Dessert</button><button class="sub-btn">Kue</button><button class="sub-btn">Makanan Berat</button>
+            <button class="sub-btn">Minuman</button><button class="sub-btn">Kopi Es</button>
+        </div>
+
+        <div class="banner">🎉 FLASH SALE 9.9 - DISKON UP TO 90% 🎉</div>
+
+        <h2 style="padding:15px 15px 5px 15px;" id="judulRekom">Rekomendasi Untuk Mochi</h2>
+        <div class="container">
+            <div class="grid" id="produkGrid"></div>
+        </div>
+    </div>
+
+<script>
+const produkOutfit = [
+  {nama:"Cardigan Pink Knit", harga:"Rp 89.000", hargaLama:"Rp 120.000", diskon:"25% OFF", img:"https://images.unsplash.com/photo-1434389677669-e08b4a91761c?w=400", rating:"⭐ 4.9", desc:"Bahan rajut premium, tebal dan hangat. Cocok untuk daily Mochi!"},
+  {nama:"Blouse Pink Ceruti", harga:"Rp 75.000", hargaLama:"Rp 90.000", diskon:"15% OFF", img:"https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=400", rating:"⭐ 4.8", desc:"Bahan ceruti flowy, cantik untuk kerja atau kondangan."},
+  {nama:"Jeans Pink Slimfit", harga:"Rp 110.000", hargaLama:"Rp 138.000", diskon:"20% OFF", img:"https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400", rating:"⭐ 4.9", desc:"Jeans warna pink, model slimfit. Bahan stretch."},
+  {nama:"Polo Premium Pink", harga:"Rp 135.000", hargaLama:"Rp 150.000", diskon:"10% OFF", img:"https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=400", rating:"⭐ 4.7", desc:"Polo shirt bahan pique premium, adem dan tidak mudah kusut."}
+];
+
+const produkFood = [
+  {nama:"Nasi Goreng Spesial", harga:"Rp 20.000", hargaLama:"Rp 24.000", diskon:"15% OFF", img:"https://images.unsplash.com/photo-1603133872878-6846029bb4d2?w=400", rating:"⭐ 4.7", desc:"Nasi goreng dengan ayam, telur ceplok, sosis dan kerupuk."},
+  {nama:"Es Kopi Susu Mochi", harga:"Rp 18.000", hargaLama:"Rp 25.000", diskon:"28% OFF", img:"https://images.unsplash.com/photo-1551024601-bec78aea095b?w=400", rating:"⭐ 4.8", desc:"Kopi robusta + susu creamy + boba kenyal. Seger!"},
+  {nama:"Cake Mochi Coklat", harga:"Rp 35.000", hargaLama:"Rp 50.000", diskon:"B1G1", img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400", rating:"⭐ 4.9", desc:"Cake lembut dengan isian mochi coklat lumer."},
+  {nama:"Pancake Strawberry", harga:"Rp 22.000", hargaLama:"Rp 30.000", diskon:"Gratis Ongkir", img:"https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400", rating:"⭐ 4.8", desc:"Pancake fluffy dengan saus strawberry dan potongan buah."}
+];
+
+let produkAktif = produkOutfit;
+
+function renderProduk() {
+  const grid = document.getElementById('produkGrid');
+  grid.innerHTML = '';
+  produkAktif.forEach((p, i) => {
+    grid.innerHTML += `
+    <div class="card" onclick='bukaDetail(${JSON.stringify(p)})'>
+      <img src="${p.img}">
+      <div class="card-info">
+        <span class="diskon">${p.diskon}</span>
+        <h3>${p.nama}</h3>
+        <div><span class="harga-baru">${p.harga}</span> <span class="harga-lama">${p.hargaLama}</span></div>
+        <div class="rating">${p.rating}</div>
+      </div>
+    </div>`;
+  });
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if(tab === 'outfit') {
+    document.querySelectorAll('.tab')[0].classList.add('active');
+    produkAktif = produkOutfit;
+    document.getElementById('subOutfit').style.display = 'flex';
+    document.getElementById('subFood').style.display = 'none';
+    document.getElementById('judulRekom').innerText = 'Rekomendasi Outfit Untuk Mochi';
+  } else {
+    document.querySelectorAll('.tab')[1].classList.add('active');
+    produkAktif = produkFood;
+    document.getElementById('subOutfit').style.display = 'none';
+    document.getElementById('subFood').style.display = 'flex';
+    document.getElementById('judulRekom').innerText = 'Rekomendasi Makanan Untuk Mochi';
+  }
+  renderProduk();
+}
+
+function bukaDetail(p) {
+  document.getElementById('detail-img').src = p.img;
+  document.getElementById('detail-nama').innerText = p.nama;
+  document.getElementById('detail-harga').innerText = p.harga;
+  document.getElementById('detail-hargaLama').innerText = p.hargaLama;
+  document.getElementById('detail-diskon').innerText = p.diskon;
+  document.getElementById('detail-rating').innerText = p.rating;
+  document.getElementById('detail-desc').innerText = p.desc;
+  showPage('detail');
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function cariProduk() {
+  let input = document.getElementById('searchInput').value.toLowerCase();
+  produkAktif = [...produkOutfit,...produkFood].filter(p => p.nama.toLowerCase().includes(input));
+  renderProduk();
+}
+
+renderProduk();
+</script>
+
+</body>
+</html>
