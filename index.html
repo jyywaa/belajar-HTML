@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MochiShop - Aplikasi E-Commerce Cute & Modern</title>
+  <style>
+    /* ==========================================================================
+       1. VARIABLES & BASE STYLES
+       ========================================================================== */
+    :root {
+      --primary: #FF4DA6;       /* Hot Pink */
+      --secondary: #FF8FD9;     /* Light Pink */
+      --highlight: #FFFFFF;     /* Accent / White */
+      --bg-pink: #FFE4F1;       /* Pink Muda Soft */
+      --surface: #FFFFFF;       /* Card Background */
+      --text-dark: #333333;
+      --text-muted: #777777;
+      --danger: #FF3B30;
+      --success: #34C759;
+      --radius: 18px;
+      --shadow: 0 8px 20px rgba(255, 77, 166, 0.15);
+      --shadow-sm: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-pink);
+      color: var(--text-dark);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    /* Container Simulasi App Mobile */
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background-color: #FAFAFA;
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 75px; /* Spasi untuk bottom nav */
+      box-shadow: 0 0 30px rgba(0,0,0,0.1);
+      overflow-x: hidden;
+    }
+
+    /* Helper Utility */
+    .hidden { display: none !important; }
+    .text-center { text-align: center; }
+    .badge {
+      background-color: var(--primary);
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    /* ==========================================================================
+       2. HEADER & NAVIGATION STYLES
+       ========================================================================== */
+    /* Header Sticky */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: var(--primary);
+      color: white;
+      padding: 12px 16px;
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .logo-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Search Bar */
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 16px 10px 38px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      font-size: 13px;
+      background-color: rgba(255, 255, 255, 0.95);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #888;
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      height: 65px;
+      background-color: var(--surface);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+      box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.08);
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+      width: 33%;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .nav-item .icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -4px;
+      right: 28%;
+      background-color: var(--primary);
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* ==========================================================================
+       3. TOAST NOTIFICATION STYLES
+       ========================================================================== */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background-color: var(--surface);
+      color: var(--text-dark);
+      padding: 12px 20px;
+      border-radius: 25px;
+      box-shadow: 0 10px 25px rgba(255, 77, 166, 0.3);
+      border-left: 5px solid var(--primary);
+      z-index: 1000;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 90%;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ==========================================================================
+       4. ONBOARDING WIZARD STYLES (MULTI-STEP OVERLAY)
+       ========================================================================== */
+    .onboarding-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .onboarding-card {
+      background: var(--surface);
+      width: 100%;
+      max-width: 380px;
+      border-radius: 24px;
+      padding: 30px 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .onboarding-card h2 {
+      color: var(--primary);
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .onboarding-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #555;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      border: 1.5px solid #FFE4F1;
+      outline: none;
+      font-size: 14px;
+      background-color: #FFF9FC;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: var(--radius);
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-pink);
+      color: var(--primary);
+      box-shadow: none;
+      margin-top: 8px;
+    }
+
+    /* ==========================================================================
+       5. HOME VIEW STYLES
+       ========================================================================== */
+    /* Banner Promo */
+    .banner {
+      margin: 16px;
+      background: linear-gradient(45deg, #FF4DA6, #FF8FD9);
+      color: white;
+      padding: 18px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner h3 {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .banner p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .banner-badge {
+      position: absolute;
+      right: -10px;
+      bottom: -10px;
+      font-size: 60px;
+      opacity: 0.25;
+    }
+
+    /* Categories Tabs */
+    .tabs-container {
+      display: flex;
+      gap: 10px;
+      padding: 0 16px 12px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tabs-container::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      padding: 8px 16px;
+      background-color: var(--surface);
+      border: 1px solid var(--bg-pink);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Section Title */
+    .section-title {
+      font-size: 15px;
+      font-weight: bold;
+      padding: 0 16px 10px 16px;
+      color: #444;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 16px 16px 16px;
+    }
+
+    .product-card {
+      background-color: var(--surface);
+      border-radius: var(--radius);
+      padding: 10px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border: 1px solid #FFF0F6;
+    }
+
+    .product-card-badge {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      z-index: 2;
+    }
+
+    .product-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+
+    .product-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #333;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .price-wrapper {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .price-current {
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .price-old {
+      font-size: 10px;
+      color: #aaa;
+      text-decoration: line-through;
+    }
+
+    .rating {
+      font-size: 11px;
+      color: #FFA800;
+      margin-bottom: 8px;
+    }
+
+    .btn-buy {
+      background-color: #FFF0F6;
+      color: var(--primary);
+      border: none;
+      padding: 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      transition: background 0.2s;
+    }
+
+    .btn-buy:active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    /* ==========================================================================
+       6. PRODUCT DETAIL VIEW STYLES
+       ========================================================================== */
+    .detail-view {
+      padding: 16px;
+    }
+
+    .btn-back {
+      background: var(--surface);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+
+    .detail-img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .detail-info {
+      background: var(--surface);
+      padding: 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .detail-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .detail-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 12px 0;
+    }
+
+    /* Review Section */
+    .reviews-section {
+      background: var(--surface);
+      padding: 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .reviews-title {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #FFE4F1;
+      padding-bottom: 8px;
+    }
+
+    .review-item {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed #FFE4F1;
+    }
+
+    .review-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--secondary);
+    }
+
+    .review-content h5 {
+      font-size: 12px;
+      color: #333;
+    }
+
+    .review-content p {
+      font-size: 11px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       7. CART VIEW STYLES
+       ========================================================================== */
+    .cart-container {
+      padding: 16px;
+    }
+
+    .cart-item {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .cart-item input[type="checkbox"] {
+      accent-color: var(--primary);
+      width: 18px;
+      height: 18px;
+    }
+
+    .cart-item-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      object-fit: cover;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .cart-item-price {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--primary);
+      margin-top: 4px;
+    }
+
+    .btn-delete {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .cart-summary {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    .summary-row.total {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--text-dark);
+      border-top: 1px dashed #DDD;
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+
+    /* ==========================================================================
+       8. PROFILE VIEW STYLES
+       ========================================================================== */
+    .profile-container {
+      padding: 16px;
+    }
+
+    .profile-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .profile-name {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .profile-email {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .orders-menu {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      text-align: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .menu-item {
+      font-size: 11px;
+      color: #555;
+      cursor: pointer;
+    }
+
+    .menu-item .icon {
+      font-size: 22px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .list-menu {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .list-item {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #FFE4F1;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .list-item:last-child { border-bottom: none; }
+
+    /* ==========================================================================
+       9. ADMIN DASHBOARD STYLES
+       ========================================================================== */
+    .admin-container {
+      padding: 16px;
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 12px 8px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-number {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+
+    .admin-tab-btn {
+      padding: 8px 12px;
+      background: #E0E0E0;
+      border: none;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .admin-tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .admin-section {
+      background: var(--surface);
+      padding: 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .admin-section h4 {
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: var(--primary);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #FFE4F1;
+    }
+
+    th {
+      background-color: #FFF0F6;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- APP CONTAINER -->
+  <div class="app-container">
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast">
+      <span id="toast-icon">✨</span>
+      <span id="toast-message">Pesan Notifikasi</span>
+    </div>
+
+    <!-- ONBOARDING OVERLAY (MULTI-STEP WIZARD) -->
+    <div id="onboarding-overlay" class="onboarding-overlay">
+      <div class="onboarding-card">
+        <!-- STEP 1: EMAIL -->
+        <div id="step-1">
+          <h2>Selamat Datang! 🍡</h2>
+          <p>Masukkan email aktif kamu untuk memulai di MochiShop</p>
+          <div class="form-group">
+            <label for="input-email">Alamat Email</label>
+            <input type="email" id="input-email" class="form-control" placeholder="contoh: customer@gmail.com">
+          </div>
+          <button class="btn" onclick="goToStep2()">Lanjut Ke Step 2 ➔</button>
+        </div>
+
+        <!-- STEP 2: USERNAME & PASSWORD -->
+        <div id="step-2" class="hidden">
+          <h2>Buat / Masuk Akun ✨</h2>
+          <p>Silakan isi username dan password kamu</p>
+          <div class="form-group">
+            <label for="input-username">Username</label>
+            <input type="text" id="input-username" class="form-control" placeholder="Masukan username">
+          </div>
+          <div class="form-group">
+            <label for="input-password">Password</label>
+            <input type="password" id="input-password" class="form-control" placeholder="Masukan password">
+          </div>
+          <button class="btn" onclick="handleLogin()">Masuk Aplikasi 🛍️</button>
+          <button class="btn btn-secondary" onclick="goToStep1()">🡨 Kembali</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STICKY HEADER -->
+    <header id="main-header" class="sticky-header">
+      <
