@@ -1,1 +1,158 @@
-i
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin MochiShop</title>
+<style>
+:root{--pink:#FF4DA6}*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#F5F5F5}
+.login-box{width:90%;max-width:400px;margin:100px auto;background:white;padding:30px;border-radius:20px;box-shadow:0 5px 20px rgba(0,0,0,.1)}
+input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px}
+.btn{width:100%;padding:14px;background:var(--pink);color:white;border:none;border-radius:14px;font-weight:800;cursor:pointer}
+.sidebar{width:240px;background:var(--pink);color:white;position:fixed;height:100%;padding:20px;left:0;top:0}
+.sidebar div{padding:12px;border-radius:10px;cursor:pointer;margin-bottom:8px}
+.sidebar div.active{background:white;color:var(--pink);font-weight:800}
+.main{margin-left:260px;padding:20px}
+.card{background:white;padding:20px;border-radius:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+table{width:100%;border-collapse:collapse}th,td{padding:12px;text-align:left;border-bottom:1px solid #eee}
+.page{display:none}.page.active{display:block}
+.status{padding:5px 10px;border-radius:10px;font-size:12px;font-weight:700}
+.status.dikemas{background:#FFF3CD;color:#856404}
+.status.dikirim{background:#CCE5FF;color:#004085}
+.status.selesai{background:#D4EDDA;color:#155724}
+</style>
+</head>
+<body>
+
+<!-- HALAMAN LOGIN -->
+<div id="loginPage" class="page active">
+  <div class="login-box">
+    <h2 style="text-align:center;color:var(--pink)">Login Admin</h2>
+    <input id="user" placeholder="Username" value="admin">
+    <input id="pass" type="password" placeholder="Password" value="123">
+    <button class="btn" onclick="login()">Masuk</button>
+  </div>
+</div>
+
+<!-- HALAMAN DASHBOARD ADMIN -->
+<div id="adminPage" class="page">
+  <div class="sidebar">
+    <h2>🍡 Admin</h2>
+    <div class="active" onclick="showTab('dashboard',this)">Dashboard</div>
+    <div onclick="showTab('input',this)">Input Barang</div>
+    <div onclick="showTab('view',this)">Data Barang</div>
+    <div onclick="showTab('pesanan',this)">Status Pengiriman</div>
+    <div onclick="showTab('laporan',this)">Laporan</div>
+    <div onclick="logout()">Keluar</div>
+  </div>
+
+  <div class="main">
+    <!-- 1. DASHBOARD -->
+    <div id="dashboard">
+      <h2>Dashboard</h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+        <div class="card"><h3>Total Barang</h3><h1 id="totalBarang">0</h1></div>
+        <div class="card"><h3>Total Stok</h3><h1 id="totalStok">0</h1></div>
+        <div class="card"><h3>Pesanan Masuk</h3><h1 id="totalPesanan">0</h1></div>
+      </div>
+    </div>
+
+    <!-- 2. INPUT BARANG -->
+    <div id="input" style="display:none">
+      <h2>Input Barang Baru</h2>
+      <div class="card">
+        <input id="namaBarang" placeholder="Nama Barang">
+        <input id="hargaBarang" type="number" placeholder="Harga">
+        <input id="stokBarang" type="number" placeholder="Stok">
+        <select id="kategoriBarang"><option>food</option><option>outfit</option></select>
+        <button class="btn" onclick="tambahBarang()">Simpan</button>
+      </div>
+    </div>
+
+    <!-- 3. VIEW BARANG -->
+    <div id="view" style="display:none">
+      <h2>Data Barang</h2>
+      <div class="card">
+        <table><thead><tr><th>Nama</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead>
+        <tbody id="tabelBarang"></tbody></table>
+      </div>
+    </div>
+
+    <!-- 4. STATUS PENGIRIMAN BARU -->
+    <div id="pesanan" style="display:none">
+      <h2>Status Pengiriman</h2>
+      <div class="card">
+        <table><thead><tr><th>No Pesanan</th><th>Pembeli</th><th>Total</th><th>Status</th><th>Ubah</th></tr></thead>
+        <tbody id="tabelPesanan"></tbody></table>
+      </div>
+    </div>
+
+    <!-- 5. LAPORAN 3 PILIHAN -->
+    <div id="laporan" style="display:none">
+      <h2>Laporan Penjualan</h2>
+      <div class="card">
+        <label>Pilih Jenis Laporan:</label>
+        <select id="jenisLaporan">
+          <option value="harian">Harian</option>
+          <option value="bulanan">Bulanan</option>
+          <option value="tahunan">Tahunan</option>
+        </select>
+        <label>Tanggal Awal:</label><input id="tglAwal" type="date">
+        <label>Tanggal Akhir:</label><input id="tglAkhir" type="date">
+        <button class="btn" onclick="buatLaporan()">Tampilkan</button>
+      </div>
+      <div class="card">
+        <table><thead><tr><th>Tanggal</th><th>Barang</th><th>Jumlah</th><th>Total</th></tr></thead>
+        <tbody id="tabelLaporan"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// DATA SIMULASI
+let barang = JSON.parse(localStorage.getItem('barang')||'[]');
+let pesanan = [{id:1,pembeli:"Syera",total:36000,status:"dikemas",tgl:"2026-08-06"}];
+
+function login(){if(document.getElementById('user').value=='admin'){showPage('adminPage');refresh();}else alert('salah')}
+function logout(){showPage('loginPage')}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function showTab(id,el){document.querySelectorAll('.main > div').forEach(t=>t.style.display='none');document.getElementById(id).style.display='block';document.querySelectorAll('.sidebar div').forEach(d=>d.classList.remove('active'));el.classList.add('active')}
+
+function refresh(){
+  document.getElementById('totalBarang').innerText=barang.length;
+  document.getElementById('totalStok').innerText=barang.reduce((a,b)=>a+b.stok,0);
+  document.getElementById('totalPesanan').innerText=pesanan.length;
+  document.getElementById('tabelBarang').innerHTML=barang.map(b=>`<tr><td>${b.nama}</td><td>Rp${b.harga}</td><td>${b.stok}</td><td><button onclick="hapus(${b.id})">Hapus</button></td></tr>`).join('');
+  document.getElementById('tabelPesanan').innerHTML=pesanan.map(p=>`
+    <tr>
+      <td>#MCH00${p.id}</td><td>${p.pembeli}</td><td>Rp${p.total}</td>
+      <td><span class="status ${p.status}">${p.status}</span></td>
+      <td>
+        <select onchange="ubahStatus(${p.id},this.value)">
+          <option>Dikemas</option><option>Dikirim</option><option>Selesai</option>
+        </select>
+      </td>
+    </tr>`).join('');
+}
+function tambahBarang(){barang.push({id:Date.now(),nama:document.getElementById('namaBarang').value,harga:+document.getElementById('hargaBarang').value,stok:+document.getElementById('stokBarang').value});localStorage.setItem('barang',JSON.stringify(barang));alert('Tersimpan');refresh();}
+function hapus(id){barang=barang.filter(b=>b.id!=id);localStorage.setItem('barang',JSON.stringify(barang));refresh();}
+function ubahStatus(id,val){let p=pesanan.find(x=>x.id==id);p.status=val.toLowerCase();refresh();}
+
+function buatLaporan(){
+  let jenis=document.getElementById('jenisLaporan').value;
+  let awal=new Date(document.getElementById('tglAwal').value);
+  let akhir=new Date(document.getElementById('tglAkhir').value);
+  
+  let data = pesanan.filter(p=>{
+    let t=new Date(p.tgl);
+    if(jenis=='harian') return t>=awal && t<=akhir;
+    if(jenis=='bulanan') return t.getMonth()==awal.getMonth() && t.getFullYear()==awal.getFullYear();
+    if(jenis=='tahunan') return t.getFullYear()==awal.getFullYear();
+  });
+  
+  document.getElementById('tabelLaporan').innerHTML = data.map(p=>`<tr><td>${p.tgl}</td><td>Pesanan #MCH00${p.id}</td><td>1</td><td>Rp${p.total}</td></tr>`).join('') || '<tr><td colspan="4">Data kosong</td></tr>';
+}
+</script>
+</body>
+</html>
