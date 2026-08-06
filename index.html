@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MochiShop</title>
+<style>
+:root{--pink:#FF4DA6;--pink2:#FFE4F1}*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:var(--pink2);padding-bottom:80px}
+header{background:var(--pink);color:white;padding:14px 16px;display:flex;justify-content:space-between;position:sticky;top:0;z-index:10}
+.logo{font-size:20px;font-weight:800}
+.search-wrap{display:flex;padding:12px 16px;background:var(--pink);gap:8px}
+.search-wrap input{flex:1;padding:12px;border-radius:25px;border:none}
+.search-wrap button{background:white;color:var(--pink);border:none;border-radius:25px;padding:0 20px;font-weight:700}
+.tabs{display:flex;gap:10px;padding:12px 16px;overflow-x:auto}
+.tab{padding:10px 18px;background:white;border-radius:25px;color:var(--pink);font-weight:700;cursor:pointer;white-space:nowrap}
+.tab.active{background:var(--pink);color:white}
+.subtabs{display:flex;gap:8px;padding:0 16px 12px 16px;overflow-x:auto}
+.subtab{padding:8px 14px;background:white;border-radius:20px;color:var(--pink);font-size:13px;cursor:pointer;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:16px}
+.card{background:white;border-radius:18px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,.06);cursor:pointer;position:relative}
+.card img{width:100%;height:160px;object-fit:cover;background:#ffe4f1}
+.badge{position:absolute;background:var(--pink);color:white;font-size:11px;padding:4px 8px;border-radius:10px;margin:8px;font-weight:800}
+.info{padding:10px}.price{color:var(--pink);font-weight:800}
+.old{font-size:12px;text-decoration:line-through;color:#999;margin-left:4px}
+.avatar{width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid var(--pink)}
+.avatar-sm{width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px}
+.btn{width:100%;padding:14px;background:var(--pink);color:white;border:none;border-radius:14px;font-weight:800}
+.btn-gray{width:100%;padding:14px;background:#E0E0E0;color:#333;border:none;border-radius:14px;font-weight:700;margin-top:10px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:white;border-top:1px solid #ddd;padding:10px 0}
+.nav-item{text-align:center;font-size:12px;color:#888;cursor:pointer}
+.nav-item.active{color:var(--pink);font-weight:800}
+.page{display:none}.page.active{display:block}
+.comment{background:var(--pink2);padding:10px;border-radius:12px;margin-top:8px;font-size:13px;display:flex;align-items:center}
+.flash{background:linear-gradient(90deg,#FF4DA6,#FF8FD9);color:white;padding:14px;text-align:center;border-radius:16px;margin:12px 16px;font-weight:900}
+.cart-item{display:flex;gap:12px;background:white;padding:12px;border-radius:14px;margin-bottom:10px}
+.setting-item{background:white;padding:14px;border-radius:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+</style>
+</head>
+<body>
+<header><div class="logo">🍡 MochiShop</div><div>⚙️</div></header>
+
+<div id="home" class="page active">
+  <div class="search-wrap"><input id="searchInput" placeholder="Cari ayam geprek, cardigan..."><button onclick="search()">Cari</button></div>
+  <div class="tabs">
+    <div class="tab active" onclick="setTab('home',this)">Home</div>
+    <div class="tab" onclick="setTab('food',this)">MochiFood</div>
+    <div class="tab" onclick="setTab('outfit',this)">MochiOutfit</div>
+    <div class="tab" onclick="setTab('promo',this)">Promo</div>
+  </div>
+  <div class="flash">🎉 FLASH SALE 9.9 - DISKON UP TO 90% 🎉</div>
+  <h3 style="padding:0 16px">Rekomendasi Untuk Mochi</h3>
+  <div class="grid" id="homeGrid"></div>
+</div>
+
+<div id="food" class="page">
+  <div class="search-wrap"><input id="searchFood" placeholder="Cari makanan..."><button onclick="searchFood()">Cari</button></div>
+  <div class="subtabs">
+    <div class="subtab" onclick="filterFood('semua')">Semua</div><div class="subtab" onclick="filterFood('berat')">Makanan Berat</div>
+    <div class="subtab" onclick="filterFood('dessert')">Dessert</div><div class="subtab" onclick="filterFood('minuman')">Minuman</div>
+  </div>
+  <h3 style="padding:0 16px">Rekomendasi Makanan</h3>
+  <div class="grid" id="foodGrid"></div>
+</div>
+
+<div id="outfit" class="page">
+  <div class="search-wrap"><input id="searchOutfit" placeholder="Cari baju..."><button onclick="searchOutfit()">Cari</button></div>
+  <div class="subtabs">
+    <div class="subtab" onclick="filterOutfit('cardigan')">Cardigan</div><div class="subtab" onclick="filterOutfit('sweater')">Sweater</div>
+    <div class="subtab" onclick="filterOutfit('jeans')">Jeans</div><div class="subtab" onclick="filterOutfit('polo')">Polo</div>
+    <div class="subtab" onclick="filterOutfit('blouse')">Blouse</div><div class="subtab" onclick="filterOutfit('tshirt')">T-Shirt</div>
+  </div>
+  <h3 style="padding:0 16px">Rekomendasi Outfit</h3>
+  <div class="grid" id="outfitGrid"></div>
+</div>
+
+<div id="promo" class="page"><h3 style="padding:16px">Promo Spesial Hari Ini</h3><div class="grid" id="promoGrid"></div></div>
+
+<div id="detail" class="page">
+  <button class="btn-gray" onclick="back()">← Kembali</button>
+  <div id="detailContent" style="padding:16px"></div>
+</div>
+
+<div id="cart" class="page">
+  <h3 style="padding:16px">Keranjang</h3>
+  <div id="cartList" style="padding:0 16px"></div>
+  <div style="padding:16px"><div id="total" style="font-weight:800;margin-bottom:10px"></div><button class="btn" onclick="checkout()">Checkout via MochiPay</button></div>
+</div>
+
+<!-- UDAH DIHAPUS KOMENTARNYA DARI AKUN -->
+<div id="account" class="page">
+  <div style="display:flex;gap:14px;align-items:center;padding:20px;background:var(--pink);color:white">
+    <img src="https://i.imgur.com/8Km9tLL.png" class="avatar"><div><h2>Syera</h2><p>syera@email.com</p></div>
+  </div>
+  <div style="padding:16px">
+    <div class="setting-item" onclick="alert('Edit Akun')">Edit Profil <span>></span></div>
+    <div class="setting-item" onclick="alert('Riwayat Pesanan')">Riwayat Pesanan <span>></span></div>
+    <div class="setting-item" onclick="alert('Lacak: #MCH123')">Lacak Pengiriman <span>></span></div>
+    <div class="setting-item" onclick="alert('Saldo: Rp120.000')">MochiPay: Rp120.000 <span>></span></div>
+    <button class="btn-gray" onclick="alert('Keluar')">Keluar</button>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="nav('home')">Home</div>
+  <div class="nav-item" onclick="nav('cart')">Keranjang</div>
+  <div class="nav-item" onclick="nav('account')">Akun</div>
+</div>
+
+<script>
+const avatars={Syera:"https://i.imgur.com/8Km9tLL.png",Niel:"https://i.imgur.com/4AiXzf8.png",Karel:"https://i.imgur.com/3GvwNBf.png",Ata:"https://i.imgur.com/JqYE2yQ.png",Carmen:"https://i.imgur.com/1bX5QH6.png",Karina:"https://i.imgur.com/Li0i2kW.png",Rindi:"https://i.imgur.com/8deAn0F.png"};
+
+// FOTO UDAH DIGANTI PAKE IMGUR BIAR GA PUTIH + LEBIH MENARIK
+const products=[
+{id:1,nama:"Ayam Geprek Level 3",harga:18000,old:22000,diskon:"18% OFF",rating:4.8,img:"https://i.imgur.com/8Km9tLL.png",kat:"food",sub:"berat"}, // ganti link ini nanti
+{id:2,nama:"Nasi Goreng Mochi Spesial",harga:20000,old:24000,diskon:"15% OFF",rating:4.7,img:"https://i.imgur.com/4AiXzf8.png",kat:"food",sub:"berat"},
+{id:3,nama:"Mie Gacoan Level 5",harga:16000,old:19000,diskon:"16% OFF",rating:4.6,img:"https://i.imgur.com/3GvwNBf.png",kat:"food",sub:"berat"},
+{id:4,nama:"Seblak Jeletot",harga:15000,diskon:"Promo",rating:4.9,img:"https://i.imgur.com/JqYE2yQ.png",kat:"food",sub:"berat"},
+{id:5,nama:"Matcha Latte Creamy",harga:22000,diskon:"Promo",rating:4.8,img:"https://i.imgur.com/1bX5QH6.png",kat:"food",sub:"minuman"},
+{id:6,nama:"Boba Brown Sugar",harga:18000,old:22000,diskon:"18% OFF",rating:4.7,img:"https://i.imgur.com/Li0i2kW.png",kat:"food",sub:"minuman"},
+{id:7,nama:"Es Krim Mochi Coklat",harga:15000,old:18000,diskon:"B1G1",rating:4.9,img:"https://i.imgur.com/8deAn0F.png",kat:"food",sub:"dessert"},
+{id:8,nama:"Puding Oreo Lumer",harga:12000,diskon:"Baru",rating:4.8,img:"https://i.imgur.com/8Km9tLL.png",kat:"food",sub:"dessert"},
+{id:9,nama:"Cardigan Pink Oversize",harga:120000,old:150000,diskon:"20% OFF",rating:4.8,img:"https://i.imgur.com/4AiXzf8.png",kat:"outfit",sub:"cardigan"},
+{id:10,nama:"Sweater Rajut Cream",harga:135000,diskon:"Terlaris",rating:4.7,img:"https://i.imgur.com/3GvwNBf.png",kat:"outfit",sub:"sweater"},
+{id:11,nama:"Jeans Highwaist Biru",harga:160000,old:200000,diskon:"20% OFF",rating:4.8,img:"https://i.imgur.com/JqYE2yQ.png",kat:"outfit",sub:"jeans"},
+{id:12,nama:"Blouse Putih Polos",harga:95000,diskon:"Diskon",rating:4.6,img:"https://i.imgur.com/1bX5QH6.png",kat:"outfit",sub:"blouse"}];
+
+let cart=JSON.parse(localStorage.getItem('mochiCart')||'[]');
+const komentar=[{nama:"Karina",text:"Enak banget, packing rapi!"},{nama:"Rindi",text:"Ukuran pas, bahan adem"},{nama:"Niel",text:"Pengiriman cepat Semarang"},{nama:"Carmen",text:"Harga worth it"}];
+
+function render(list,target){document.getElementById(target).innerHTML=list.map(p=>`<div class="card" onclick="showDetail(${p.id})"><span class="badge">${p.diskon}</span><img src="${p.img}" onerror="this.src='https://via.placeholder.com/400x400/FF4DA6/FFFFFF?text=MochiShop'"><div class="info"><div style="font-weight:700">${p.nama}</div><div><span class="price">Rp${p.harga.toLocaleString()}</span> <span class="old">Rp${p.old?.toLocaleString()}</span></div><div>★ ${p.rating}</div></div></div>`).join('')}
+
+// KOMENTAR DIHAPUS DARI SINI. CUMA MUNCUL DI DETAIL
+function init(){render(products,'homeGrid');render(products.filter(p=>p.kat=='food'),'foodGrid');render(products.filter(p=>p.kat=='outfit'),'outfitGrid');render(products.filter(p=>p.old),'promoGrid');renderCart()}
+init();
+
+function showDetail(id){
+  const p=products.find(x=>x.id==id);
+  document.getElementById('detailContent').innerHTML=`<img src="${p.img}" style="width:100%;border-radius:18px" onerror="this.src='https://via.placeholder.com/400x400/FF4DA6/FFFFFF?text=MochiShop'"><h2>${p.nama}</h2><div class="price" style="font-size:20px">Rp${p.harga.toLocaleString()}</div><button class="btn" onclick="addCart(${p.id})">+ Masukkan Keranjang</button><h4 style="margin-top:16px">Komentar Pembeli</h4>${komentar.map(k=>`<div class="comment"><img src="${avatars[k.nama]}" class="avatar-sm"><b>${k.nama}:</b> ${k.text}</div>`).join('')}`;
+  setTab('detail')
+}
+
+function addCart(id){cart.push(products.find(x=>x.id==id));localStorage.setItem('mochiCart',JSON.stringify(cart));alert('Ditambahkan ke keranjang!');renderCart()}
+function renderCart(){if(cart.length==0){document.getElementById('cartList').innerHTML="<p style='text-align:center'>Keranjang kosong</p>";document.getElementById('total').innerText="";return}document.getElementById('cartList').innerHTML=cart.map((c,i)=>`<div class="cart-item"><img src="${c.img}" style="width:70px;height:70px;border-radius:12px"><div><div style="font-weight:700">${c.nama}</div><div class="price">Rp${c.harga.toLocaleString()}</div><button onclick="hapusCart(${i})" style="color:red;border:none;background:none">Hapus</button></div></div>`).join('');document.getElementById('total').innerText="Total: Rp"+cart.reduce((a,b)=>a+b.harga,0).toLocaleString()}
+function hapusCart(i){cart.splice(i,1);localStorage.setItem('mochiCart',JSON.stringify(cart));renderCart()}
+function checkout(){if(cart.length==0)return alert('Keranjang kosong');alert('Checkout berhasil via MochiPay!');cart=[];localStorage.setItem('mochiCart','[]');renderCart();nav('home')}
+function search(){const q=document.getElementById('searchInput').value.toLowerCase();render(products.filter(p=>p.nama.toLowerCase().includes(q)),'homeGrid')}
+function searchFood(){const q=document.getElementById('searchFood').value.toLowerCase();render(products.filter(p=>p.kat=='food'&&p.nama.toLowerCase().includes(q)),'foodGrid')}
+function searchOutfit(){const q=document.getElementById('searchOutfit').value.toLowerCase();render(products.filter(p=>p.kat=='outfit'&&p.nama.toLowerCase().includes(q)),'outfitGrid')}
+function filterFood(sub){render(sub=='semua'?products.filter(p=>p.kat=='food'):products.filter(p=>p.kat=='food'&&p.sub==sub),'foodGrid')}
+function filterOutfit(sub){render(products.filter(p=>p.kat=='outfit'&&p.sub==sub),'outfitGrid')}
+function setTab(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el?.classList.add('active')}
+function nav(p){setTab(p);document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));event.target.classList.add('active')}
+function back(){setTab('home')}
+</script>
+</body></html>
