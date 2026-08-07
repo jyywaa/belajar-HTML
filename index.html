@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MochiShop - Cute & Modern</title>
+<style>
+  :root{
+    --primary:#FF4DA6;
+    --secondary:#FF8FD9;
+    --accent:#FFFFFF;
+    --bg:#FFE4F1;
+    --surface:#FFFFFF;
+    --radius:18px;
+    --shadow:0 4px 16px rgba(255,77,166,0.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:system-ui,-apple-system,sans-serif;
+    background:var(--bg);
+    color:#333;
+    padding-bottom:80px;
+  }
+  /* Header */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:var(--primary);color:var(--accent);
+    padding:14px 16px;
+    box-shadow:var(--shadow);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  header h1{font-size:18px;font-weight:700}
+  /* Bottom Nav */
+ .bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;
+    background:var(--surface);
+    display:flex;justify-content:space-around;
+    padding:8px 0;
+    box-shadow:0 -2px 12px rgba(0,0,0,0.08);
+    border-top-left-radius:var(--radius);
+    border-top-right-radius:var(--radius);
+    z-index:50;
+  }
+ .bottom-nav button{
+    border:none;background:none;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    font-size:11px;color:#888;cursor:pointer;
+  }
+ .bottom-nav button.active{color:var(--primary);font-weight:600}
+ .cart-badge{
+    position:absolute;margin-left:18px;margin-top:-4px;
+    background:var(--primary);color:#fff;font-size:10px;
+    border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+  }
+  /* Views */
+ .view{display:none;padding:16px}
+ .view.active{display:block}
+  /* Onboarding */
+ .overlay{
+    position:fixed;inset:0;background:var(--primary);z-index:100;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px;color:#fff;
+  }
+ .overlay.card{
+    background:var(--surface);color:#333;
+    width:100%;max-width:380px;
+    padding:24px;border-radius:var(--radius);box-shadow:var(--shadow);
+  }
+  input,button,select{
+    width:100%;padding:12px;border-radius:var(--radius);
+    border:1px solid #eee;font-size:14px;margin-top:8px;
+  }
+ .btn{
+    background:var(--primary);color:#fff;border:none;font-weight:600;cursor:pointer;
+  }
+ .btn.secondary{background:var(--secondary)}
+  /* Search + Tabs */
+ .search{width:100%;padding:10px 14px;border-radius:var(--radius);border:none;margin-bottom:12px}
+ .tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px}
+ .tab{padding:8px 14px;border-radius:var(--radius);background:var(--surface);border:none;white-space:nowrap;cursor:pointer}
+ .tab.active{background:var(--primary);color:#fff}
+  /* Banner */
+ .banner{
+    background:linear-gradient(90deg,var(--primary),var(--secondary));
+    color:#fff;padding:18px;border-radius:var(--radius);
+    margin-bottom:16px;font-weight:700;text-align:center;
+  }
+  /* Product Grid */
+ .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+ .card{
+    background:var(--surface);border-radius:var(--radius);
+    padding:10px;box-shadow:var(--shadow);position:relative;
+  }
+ .card img{width:100%;height:120px;object-fit:cover;border-radius:12px}
+ .badge{
+    position:absolute;top:8px;left:8px;
+    background:var(--primary);color:#fff;font-size:10px;
+    padding:3px 6px;border-radius:8px;
+  }
+ .price{color:var(--primary);font-weight:700}
+ .old{color:#999;text-decoration:line-through;font-size:12px}
+ .stars{color:#FFB400;font-size:12px}
+ .card button{margin-top:6px;font-size:12px;padding:8px}
+  /* Detail */
+ .detail-img{width:100%;height:220px;object-fit:cover;border-radius:var(--radius)}
+ .review{display:flex;gap:10px;margin-top:12px}
+ .avatar{width:36px;height:36px;border-radius:50%;background:var(--secondary)}
+  /* Cart */
+ .cart-item{display:flex;gap:10px;background:var(--surface);padding:10px;border-radius:var(--radius);margin-bottom:10px;align-items:center}
+ .cart-item img{width:60px;height:60px;border-radius:12px;object-fit:cover}
+  /* Profile */
+ .profile-card{
+    background:var(--surface);padding:20px;border-radius:var(--radius);
+    text-align:center;box-shadow:var(--shadow);margin-bottom:16px
+  }
+ .profile-card img{width:80px;height:80px;border-radius:50%;margin-bottom:8px}
+ .vip{background:var(--secondary);color:#fff;padding:4px 10px;border-radius:20px;font-size:12px}
+ .menu{list-style:none}
+ .menu li{background:var(--surface);padding:14px;border-radius:var(--radius);margin-bottom:8px;box-shadow:var(--shadow)}
+  /* Admin */
+ .sidebar{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px}
+ .sidebar button{flex:1;min-width:120px}
+  table{width:100%;background:var(--surface);border-radius:var(--radius);overflow:hidden;font-size:12px}
+  td,th{padding:8px;text-align:left;border-bottom:1px solid #eee}
+  /* Toast */
+ .toast{
+    position:fixed;top:70px;left:50%;transform:translateX(-50%);
+    background:#333;color:#fff;padding:10px 16px;border-radius:var(--radius);
+    opacity:0;transition:0.3s;z-index:200
+  }
+ .toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<header id="appHeader" style="display:none">
+  <h1>MochiShop</h1>
+</header>
+
+<div id="toast" class="toast"></div>
+
+<!-- ONBOARDING -->
+<div id="onboarding" class="overlay">
+  <div class="card" id="step1">
+    <h2>Selamat Datang 💕</h2>
+    <input type="email" id="email" placeholder="Masukkan Email">
+    <button class="btn" onclick="nextStep()">Lanjut</button>
+  </div>
+  <div class="card" id="step2" style="display:none">
+    <h2>Buat Akun</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button class="btn" onclick="login()">Masuk</button>
+    <p style="font-size:12px;margin-top:8px;color:#666">
+      Demo: customer/123 atau meila/meila123
+    </p>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="home" class="view">
+  <input class="search" placeholder="Cari mochi favoritmu..." oninput="search(this.value)">
+  <div class="tabs">
+    <button class="tab active" onclick="filterCat('all',this)">Home</button>
+    <button class="tab" onclick="filterCat('MochiFood',this)">MochiFood</button>
+    <button class="tab" onclick="filterCat('MochiOutfit',this)">MochiOutfit</button>
+    <button class="tab" onclick="filterCat('Promo',this)">Promo</button>
+  </div>
+  <div class="banner">FLASH SALE 9.9 - DISKON UP TO 90%</div>
+  <h3>Rekomendasi Untuk Mochi</h3>
+  <div class="grid" id="productGrid"></div>
+</div>
+
+<!-- DETAIL -->
+<div id="detail" class="view">
+  <button onclick="showView('home')">← Kembali</button>
+  <img id="dImg" class="detail-img">
+  <h2 id="dName"></h2>
+  <p><span class="price" id="dPrice"></span> <span class="old" id="dOld"></span></p>
+  <p id="dDesc"></p>
+  <button class="btn" onclick="buyNow()">🛒 Beli Sekarang</button>
+  <button class="btn secondary" onclick="addToCart()">+ Masukkan Keranjang</button>
+  <h4>Ulasan</h4>
+  <div id="reviews"></div>
+</div>
+
+<!-- CART -->
+<div id="cart" class="view">
+  <h2>Keranjang</h2>
+  <div id="cartList"></div>
+  <p>Ongkir: Rp 20.000</p>
+  <h3>Subtotal: <span id="subtotal">Rp 0</span></h3>
+  <button class="btn" onclick="checkout()">Bayar Sekarang</button>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="view">
+  <div class="profile-card">
+    <img src="https://i.pravatar.cc/100?img=5">
+    <h3 id="pName">customer</h3>
+    <p id="pEmail">customer@email.com</p>
+    <span class="vip">VIP Member</span>
+  </div>
+  <ul class="menu">
+    <li>Pesanan Saya: Belum Bayar | Dikemas | Dikirim | Beri Penilaian</li>
+    <li>MochiPay</li>
+    <li>MochiFood</li>
+    <li>Voucher Saya</li>
+    <li onclick="logout()" style="color:var(--primary);text-align:center;cursor:pointer">Keluar</li>
+  </ul>
+</div>
+
+<!-- ADMIN -->
+<div id="admin" class="view">
+  <div class="sidebar">
+    <button class="tab active" onclick="adminTab('dash',this)">Dashboard</button>
+    <button class="tab" onclick="adminTab('input',this)">Input Barang</button>
+    <button class="tab" onclick="adminTab('data',this)">Data Barang</button>
+    <button class="tab" onclick="adminTab('pesan',this)">Pesanan</button>
+  </div>
+  <div id="adminDash"></div>
+  <div id="adminInput" style="display:none">
+    <input id="iNama" placeholder="Nama Barang">
+    <input id="iHarga" type="number" placeholder="Harga">
+    <input id="iStok" type="number" placeholder="Stok">
+    <select id="iKat"><option>MochiFood</option><option>MochiOutfit</option></select>
+    <button class="btn" onclick="addBarang()">Simpan</button>
+  </div>
+  <div id="adminData" style="display:none"></div>
+  <div id="adminPesan" style="display:none"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav" style="display:none">
+  <button class="active" onclick="showView('home')"><span>🏠</span>Home</button>
+  <button onclick="showView('cart')"><span>🛒</span>Keranjang<span class="cart-badge" id="cartCount">0</span></button>
+  <button onclick="showView('profile')"><span>👤</span>Akun</button>
+</nav>
+
+<script>
+const KEY = {
+  user:'mochiUser',
+  cart:'mochiCart',
+  barang:'barang'
+}
+
+let currentProduct = null;
+let currentFilter = 'all';
+
+const defaultBarang = [
+  {id:1,nama:"Ayam Geprek",harga:15000,old:20000,diskon:25,rating:4.8,img:"https://images.unsplash.com/photo-1604908177453-7462950a6a3b?q=80&w=400",kategori:"MochiFood",desc:"Ayam geprek pedas level 3"},
+  {id:2,nama:"Nasi Goreng",harga:12000,old:18000,diskon:33,rating:4.6,img:"https://images.unsplash.com/photo-1603133872878-6846029bb4d3?q=80&w=400",kategori:"MochiFood",desc:"Nasi goreng spesial mochi"},
+  {id:3,nama:"Matcha Latte",harga:18000,old:25000,diskon:28,rating:4.9,img:"https://images.unsplash.com/photo-1572490122747-3968b75cc699?q=80&w=400",kategori:"MochiFood",desc:"Matcha latte creamy"},
+  {id:4,nama:"Es Krim Mochi",harga:10000,old:15000,diskon:33,rating:4.7,img:"https://images.unsplash.com/photo-1501443762994-82bd5d41936a?q=80&w=400",kategori:"MochiFood",desc:"Es krim isi mochi lembut"},
+  {id:5,nama:"Cardigan Pink",harga:89000,old:120000,diskon:25,rating:4.5,img:"https://images.unsplash.com/photo-1434389677669-e08b4cac3105?q=80&w=400",kategori:"MochiOutfit",desc:"Cardigan pink oversize"},
+  {id:6,nama:"Sweater Oversize",harga:110000,old:150000,diskon:26,rating:4.8,img:"https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=400",kategori:"MochiOutfit",desc:"Sweater nyaman buat nongkrong"}
+];
+
+function init(){
+  if(!localStorage.getItem(KEY.barang)) localStorage.setItem(KEY.barang, JSON.stringify(defaultBarang));
+  const user = JSON.parse(localStorage.getItem(KEY.user));
+  if(user) enterApp(user);
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+function nextStep(){
+  if(!document.getElementById('email').value){showToast('Email wajib');return}
+  document.getElementById('step1').style.display='none';
+  document.getElementById('step2').style.display='block';
+}
+
+function login(){
+  const u=document.getElementById('username').value;
+  const p=document.getElementById('password').value;
+  const email=document.getElementById('email').value;
+  if(u==='customer' && p==='123'){
+    const user={username:u,email,role:'customer'};
+    localStorage.setItem(KEY.user,JSON.stringify(user));
+    enterApp(user);
+  }else if(u==='meila' && p==='meila123'){
+    const user={username:u,email,role:'admin'};
+    localStorage.setItem(KEY.user,JSON.stringify(user));
+    enterApp(user);
+  }else showToast('Username/password salah');
+}
+
+function enterApp(user){
+  document.getElementById('onboarding').style.display='none';
+  document.getElementById('appHeader').style.display='flex';
+  document.getElementById('bottomNav').style.display='flex';
+  if(user.role==='admin'){
+    showView('admin');renderAdmin();
+  }else{
+    showView('home');renderProducts();
+    document.getElementById('pName').textContent=user.username;
+    document.getElementById('pEmail').textContent=user.email;
+  }
+  updateCartCount();
+}
+
+function logout(){
+  localStorage.removeItem(KEY.user);
+  localStorage.removeItem(KEY.cart);
+  location.reload();
+}
+
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+  if(id==='home') document.querySelectorAll('.bottom-nav button')[0].classList.add('active');
+  if(id==='cart'){document.querySelectorAll('.bottom-nav button')[1].classList.add('active');renderCart();}
+  if(id==='profile') document.querySelectorAll('.bottom-nav button')[2].classList.add('active');
+}
+
+function renderProducts(){
+  const barang=JSON.parse(localStorage.getItem(KEY.barang));
+  const grid=document.getElementById('productGrid');
+  grid.innerHTML='';
+  barang.filter(b=>currentFilter==='all'||b.kategori===currentFilter).forEach(p=>{
+    grid.innerHTML+=`
+    <div class="card" onclick="openDetail(${p.id})">
+      <span class="badge">-${p.diskon}%</span>
+      <img src="${p.img}">
+      <h4>${p.nama}</h4>
+      <div class="stars">${'★'.repeat(5)}</div>
+      <p class="old">Rp ${p.old.toLocaleString()}</p>
+      <p class="price">Rp ${p.harga.toLocaleString()}</p>
+      <button class="btn" onclick="event.stopPropagation();buyNowId(${p.id})">🛒 Beli Sekarang</button>
+    </div>`;
+  });
+}
+
+function filterCat(cat,el){
+  currentFilter=cat;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderProducts();
+}
+
+function search(q){
+  const barang=JSON.parse(localStorage.getItem(KEY.barang));
+  const grid=document.getElementById('productGrid');
+  grid.innerHTML='';
+  barang.filter(b=>b.nama.toLowerCase().includes(q.toLowerCase())).forEach(p=>{
+    grid.innerHTML+=`<div class="card" onclick="openDetail(${p.id})"><img src="${p.img}"><h4>${p.nama}</h4><p class="price">Rp ${p.harga.toLocaleString()}</p></div>`;
+  });
+}
+
+function openDetail(id){
+  const barang=JSON.parse(localStorage.getItem(KEY.barang));
+  currentProduct=barang.find(b=>b.id===id);
+  document.getElementById('dImg').src=currentProduct.img;
+  document.getElementById('dName').textContent=currentProduct.nama;
+  document.getElementById('dPrice').textContent='Rp '+currentProduct.harga.toLocaleString();
+  document.getElementById('dOld').textContent='Rp '+currentProduct.old.toLocaleString();
+  document.getElementById('dDesc').textContent=currentProduct.desc;
+  document.getElementById('reviews').innerHTML=`
+    <div class="review"><div class="avatar"></div><div><b>Ayu</b><p>Enak banget!</p></div></div>
+    <div class="review"><div class="avatar"></div><div><b>Sinta</b><p>Packing rapi</p></div></div>
+    <div class="review"><div class="avatar"></div><div><b>Dewi</b><p>Rekomendasi!</p></div></div>
+  `;
+  showView('detail');
+}
+
+function addToCart(){
+  let cart=JSON.parse(localStorage.getItem(KEY.cart))||[];
+  cart.push(currentProduct);
+  localStorage.setItem(KEY.cart,JSON.stringify(cart));
+  updateCartCount();showToast('Masuk keranjang');
+}
+
+function buyNowId(id){
+  const barang=JSON.parse(localStorage.getItem(KEY.barang));
+  currentProduct=barang.find(b=>b.id===id);
+  buyNow();
+}
+
+function buyNow(){
+  addToCart();showView('cart');
+}
+
+function updateCartCount(){
+  const cart=JSON.parse(localStorage.getItem(KEY.cart))||[];
+  document.getElementById('cartCount').textContent=cart.length;
+}
+
+function renderCart(){
+  const cart=JSON.parse(localStorage.getItem(KEY.cart))||[];
+  const list=document.getElementById('cartList');
+  list.innerHTML='';
+  let total=0;
+  cart.forEach((p,i)=>{
+    total+=p.harga;
+    list.innerHTML+=`
+    <div class="cart-item">
+      <input type="checkbox" checked>
+      <img src="${p.img}">
+      <div><b>${p.nama}</b><p>Rp ${p.harga.toLocaleString()}</p></div>
+      <button onclick="removeCart(${i})">🗑</button>
+    </div>`;
+  });
+  document.getElementById('subtotal').textContent='Rp '+(total+20000).toLocaleString();
+}
+
+function removeCart(i){
+  let cart=JSON.parse(localStorage.getItem(KEY.cart))||[];
+  cart.splice(i,1);
+  localStorage.setItem(KEY.cart,JSON.stringify(cart));
+  renderCart();updateCartCount();
+}
+
+function checkout(){
+  localStorage.removeItem(KEY.cart);
+  renderCart();updateCartCount();
+  showToast('Checkout Berhasil');
+}
+
+function renderAdmin(){
+  const barang=JSON.parse(localStorage.getItem(KEY.barang));
+  document.getElementById('adminDash').innerHTML=`
+    <p>Total Barang: ${barang.length}</p>
+    <p>Total Stok: ${barang.reduce((a,b)=>a+(b.stok||10),0)}</p>
+    <p>Total Pesanan: 0</p>
+  `;
+  document.getElementById('adminData').innerHTML=`
+    <table><tr><th>Nama</th><th>Harga</th><th>Kategori</th></tr>
+    ${barang.map(b=>`<tr><td>${b.nama}</td><td>Rp ${b.harga}</td><td>${b.kategori}</td></tr>`).join('')}
+    </table>`;
+}
+
+function adminTab(tab,el){
+  document.querySelectorAll('.sidebar.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['adminDash','adminInput','adminData','adminPesan'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('admin'+tab.charAt(0).toUpperCase()+tab.slice(1)).style.display='block';
+}
+
+function addBarang(){
+  const barang=JSON.parse(localStorage.getItem(KEY.barang));
+  barang.push({
+    id:Date.now(),
+    nama:document.getElementById('iNama').value,
+    harga:+document.getElementById('iHarga').value,
+    stok:+document.getElementById('iStok').value,
+    kategori:document.getElementById('iKat').value,
+    old:0,diskon:0,rating:5,
+    img:"https://via.placeholder.com/200",
+    desc:""
+  });
+  localStorage.setItem(KEY.barang,JSON.stringify(barang));
+  showToast('Barang ditambahkan');renderAdmin();
+}
+
+init();
+</script>
+</body>
+</html>
