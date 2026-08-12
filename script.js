@@ -11,6 +11,17 @@ const defaultProducts = [
         sold: 142,
         bestseller: true
     },
+{
+        id: 101,
+        name: "Iphone 16 Pro Max",
+        price: 15000000,
+        desc: "Layar 120Hz OLED, RAM 12GB, Storage 256GB, Chipset Super Kencang.",
+        image: "iphone.jpeg",
+        video: "iphone2.mp4",
+        rating: 4.9,
+        sold: 142,
+        bestseller: true
+    },
     {
         id: 102,
         name: "Laptop Ultra Book Pro",
