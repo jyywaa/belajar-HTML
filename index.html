@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GadgetStore Pro - Single Page Application</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Sticky -->
+    <header>
+        <h1>GadgetStore <span>Pro</span></h1>
+        <div id="user-header-name">Guest</div>
+    </header>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Main Application Container -->
+    <div class="app-container">
+
+        <!-- PANEL ADMINISTRATOR (Tampil Jika Login Admin "meila") -->
+        <div class="card" id="admin-panel" style="display: none;">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                Panel Administrator
+            </div>
+
+            <!-- Form Tambah Produk -->
+            <form id="admin-form" onsubmit="handleAdminSubmit(event)">
+                <div class="form-group">
+                    <label>Nama Produk</label>
+                    <input type="text" id="admin-name" class="form-control" placeholder="Contoh: Smartphone Pro Max 15" required>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi & Spesifikasi Produk</label>
+                    <textarea id="admin-desc" class="form-control" rows="3" placeholder="Contoh: RAM 12GB, AMOLED 120Hz" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Harga Produk (Rp)</label>
+                    <input type="number" id="admin-price" class="form-control" placeholder="12000000" required>
+                </div>
+                <div class="form-group">
+                    <label>Upload File Gambar Produk</label>
+                    <input type="file" id="admin-image-file" class="form-control" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label>Upload File Video Demo (Opsional)</label>
+                    <input type="file" id="admin-video-file" class="form-control" accept="video/*">
+                </div>
+                <button type="submit" class="btn btn-accent">Simpan Produk ke Database</button>
+            </form>
+
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+
+            <!-- Kelola Status Pesanan Masuk (Admin) -->
+            <div class="card-title">🚚 Kelola Status Pengiriman Pesanan</div>
+            <div id="admin-orders-list"></div>
+        </div>
+
+        <hr id="admin-divider" style="border: 0; border-top: 1px solid var(--border); margin: 20px 0; display: none;">
+
+        <!-- PANEL PEMBELI (VIEWS) -->
+
+        <!-- 1. HOME VIEW (Katalog Produk) -->
+        <section id="view-home" class="view-section active">
+            <div class="card-title">🔥 Bestseller Gadget</div>
+            <div class="scroll-container" id="bestseller-list"></div>
+
+            <div class="card-title" style="margin-top: 20px;">📱 Katalog Produk Unggulan</div>
+            <div class="product-grid" id="product-grid"></div>
+        </section>
+
+        <!-- 2. CART VIEW (Keranjang & Checkout) -->
+        <section id="view-cart" class="view-section">
+            <div class="card">
+                <div class="card-title">🛒 Keranjang Belanja</div>
+                <div id="cart-items-container"></div>
+                
+                <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px;">
+                    <!-- Input Alamat Pengiriman -->
+                    <div class="form-group">
+                        <label style="color: var(--accent); font-weight: bold;">📍 Alamat Pengiriman Lengkap</label>
+                        <textarea id="checkout-address" class="form-control" rows="2" placeholder="Masukkan alamat pengiriman lengkap (Jalan, Kota, Kode Pos)..." required></textarea>
+                    </div>
+
+                    <!-- Pilih Metode Pembayaran -->
+                    <div class="form-group">
+                        <label style="color: var(--accent); font-weight: bold;">💳 Metode Pembayaran</label>
+                        <select id="checkout-payment" class="form-control" onchange="toggleQris(this.value)">
+                            <option value="COD">COD (Bayar di Tempat)</option>
+                            <option value="QRIS">QRIS (Scan Barcode / Transfer Instant)</option>
+                        </select>
+                    </div>
+
+                    <!-- Area QRIS -->
+                    <div id="qris-box" style="display: none; text-align: center; padding: 12px; background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px;">
+                        <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">Scan QRIS untuk Pembayaran Instant:</p>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GadgetStoreProPayment" alt="QRIS" style="border-radius: 8px; background: white; padding: 6px;">
+                    </div>
+
+                    <!-- Ringkasan Harga -->
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+                        <span>Subtotal Produk:</span>
+                        <span id="cart-subtotal">Rp 0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px;">
+                        <span>Ongkos Kirim Flat:</span>
+                        <span id="cart-shipping">Rp 20.000</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px; color: var(--accent); margin-bottom: 16px;">
+                        <span>Total Pembayaran:</span>
+                        <span id="cart-total">Rp 20.000</span>
+                    </div>
+                    
+                    <button class="btn btn-accent" onclick="processCheckout()">Proses Pesanan Sekarang</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. PROFILE & ORDERS VIEW -->
+        <section id="view-profile" class="view-section">
+            <div class="card">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--accent); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;">
+                        VIP
+                    </div>
+                    <div>
+                        <h3 id="profile-username" style="font-size: 16px;">-</h3>
+                        <span id="profile-role-tag" class="badge-role">Customer Member</span>
+                    </div>
+                </div>
+                <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+                    <p><strong>Email:</strong> <span id="profile-email">-</span></p>
+                    <p><strong>No. HP:</strong> <span id="profile-phone">-</span></p>
+                </div>
+                <button class="btn btn-danger" onclick="openModal('modal-logout')" style="margin-top: 16px; padding: 10px;">Logout</button>
+            </div>
+
+            <div class="card-title" style="margin-top: 20px;">📦 Status Pengiriman Pesanan Anda</div>
+            <div id="orders-container"></div>
+        </section>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Beranda
+        </div>
+        <div class="nav-item" onclick="switchTab('cart', this)">
+            <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            Keranjang
+            <span class="badge-count" id="cart-badge">0</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('profile', this)">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            Profil
+        </div>
+    </nav>
+
+    <!-- MODAL 1: Onboarding Login -->
+    <div class="modal-overlay" id="modal-onboarding">
+        <div class="modal-content">
+            <h2 style="color: var(--accent); font-size: 18px; margin-bottom: 8px;">Selamat Datang!</h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;" id="wizard-subtitle">Langkah 1 dari 3: Masukkan Email Anda</p>
+
+            <form id="wizard-form" onsubmit="handleWizardStep(event)">
+                <div id="wizard-step-1" class="wizard-step">
+                    <div class="form-group">
+                        <label>Email (Bebas)</label>
+                        <input type="email" id="wiz-email" class="form-control" placeholder="nama@email.com" required>
+                    </div>
+                </div>
+                <div id="wizard-step-2" class="wizard-step" style="display:none;">
+                    <div class="form-group">
+                        <label>Username (Bebas | Admin: <b>meila</b>)</label>
+                        <input type="text" id="wiz-username" class="form-control" placeholder="Ketik nama / username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password (Bebas | Admin: <b>meila123</b>)</label>
+                        <input type="password" id="wiz-password" class="form-control" placeholder="Ketik password">
+                    </div>
+                </div>
+                <div id="wizard-step-3" class="wizard-step" style="display:none;">
+                    <div class="form-group">
+                        <label>Nomor Telepon (Bebas)</label>
+                        <input type="tel" id="wiz-phone" class="form-control" placeholder="08123456789">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-accent" id="wiz-btn-next">Lanjutkan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Product Detail Expand -->
+    <div class="modal-overlay" id="modal-detail">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <button onclick="closeModal('modal-detail')" class="close-btn">✕</button>
+            <div id="detail-content"></div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Confirm Logout -->
+    <div class="modal-overlay" id="modal-logout">
+        <div class="modal-content" style="text-align: center;">
+            <h3 style="color: var(--text-main); font-size: 16px; margin-bottom: 8px;">Konfirmasi Logout</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Apakah Anda yakin ingin keluar dari akun ini?</p>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-outline" onclick="closeModal('modal-logout')">Batal</button>
+                <button class="btn btn-danger" onclick="confirmLogout()">Ya, Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
