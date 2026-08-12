@@ -2,11 +2,11 @@
 const defaultProducts = [
     {
         id: 101,
-        name: "Smartphone Pro Max 15",
+        name: "Oppo A6 Pro Max 15",
         price: 15000000,
         desc: "Layar 120Hz OLED, RAM 12GB, Storage 256GB, Chipset Super Kencang.",
-        image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500",
-        video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        image: "Oppo.jpeg",
+        video: "video.mp4",
         rating: 4.9,
         sold: 142,
         bestseller: true
