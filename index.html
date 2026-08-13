@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GadgetStore Pro - E-Commerce Platform</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* RESET & VARIABLE STYLES */
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary: #0f172a;
+      --accent: #10b981;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #334155;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 60px;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: white;
+      padding: 2.5rem 1rem;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+    header p {
+      margin-top: 6px;
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+      display: grid;
+      gap: 30px;
+    }
+
+    /* NAVIGATION SWITCHER */
+    .auth-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      border: 1px solid var(--border);
+    }
+    .card h2 {
+      margin-bottom: 20px;
+      color: var(--secondary);
+      font-size: 1.4rem;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* FORM STYLES */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: #475569;
+    }
+    .form-group input, 
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      font-size: 0.95rem;
+      transition: border 0.2s;
+    }
+    .form-group input:focus, 
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* BUTTONS */
+    .btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+    .btn:hover {
+      background-color: var(--primary-hover);
+    }
+    .btn-danger {
+      background-color: #ef4444;
+    }
+    .btn-danger:hover {
+      background-color: #dc2626;
+    }
+
+    /* AUTH SECTIONS */
+    .auth-box {
+      max-width: 450px;
+      margin: 0 auto;
+    }
+    .user-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #eff6ff;
+      padding: 12px 18px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #bfdbfe;
+    }
+
+    /* KATALOG GRID */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .product-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #fff;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
+    }
+    .product-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+    .product-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--secondary);
+    }
+    .product-price {
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .product-desc {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .product-video {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      background: #000;
+    }
+    .btn-buy {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      background-color: var(--accent);
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.2s ease;
+    }
+    .btn-buy:hover {
+      background-color: #059669;
+    }
+
+    /* STATUS PESANAN */
+    .order-status-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      padding: 18px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .badge-pending { background: #fef3c7; color: #d97706; }
+    .badge-process { background: #e0f2fe; color: #0284c7; }
+    .badge-shipped { background: #f3e8ff; color: #9333ea; }
+    .badge-done { background: #d1fae5; color: #059669; }
+
+    .order-select {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER UTAMA -->
+  <header>
+    <h1>GadgetStore Pro</h1>
+    <p>Platform E-Commerce Modern & Interaktif</p>
+  </header>
+
+  <main class="container">
+
+    <!-- NAVIGASI APART LOGIN -->
+    <div class="auth-toggle">
+      <button class="tab-btn active" id="tab-pembeli" onclick="switchTab('pembeli')">Akses Pembeli</button>
+      <button class="tab-btn" id="tab-admin" onclick="switchTab('admin')">Akses Admin</button>
+    </div>
+
+    <!-- ================= 1. PANEL ADMINISTRATOR ================= -->
+    <section class="card" id="panel-admin" style="display: none;">
+      <h2>Panel Administrator</h2>
+
+      <!-- Form Login Admin -->
+      <div id="admin-login-sec" class="auth-box">
+        <form id="form-login-admin">
+          <div class="form-group">
+            <label>Username Admin</label>
+            <input type="text" id="login-admin-user" placeholder="Ketik: meila" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="login-admin-pass" placeholder="Ketik: meila123" required>
+          </div>
+          <button type="submit" class="btn">Login Admin</button>
+        </form>
+      </div>
+
+      <!-- Dashboard Admin (Hidden Default) -->
+      <div id="admin-dashboard" style="display: none;">
+        <div class="user-info-bar">
+          <span>Mode: <b>Administrator</b> (<span id="admin-name">meila</span>)</span>
+          <button id="btn-logout-admin" class="btn btn-danger" style="width: auto; padding: 6px 14px;">Logout Admin</button>
+        </div>
+
+        <form id="form-add-product">
+          <div class="form-group">
+            <label for="prod-name">Nama Produk</label>
+            <input type="text" id="prod-name" placeholder="Contoh: iPhone 15 Pro Max" required>
+          </div>
+          <div class="form-group">
+            <label for="prod-desc">Deskripsi Spesifikasi</label>
+            <textarea id="prod-desc" rows="3" placeholder="Contoh: Chipset A17 Pro, RAM 8GB, Titanium Frame" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="prod-price-num">Harga Nominal (Rp)</label>
+            <input type="number" id="prod-price-num" placeholder="Contoh: 21000000" required>
+          </div>
+          <div class="form-group">
+            <label for="prod-img-file">Foto Produk (Lokal/Perangkat)</label>
+            <input type="file" id="prod-img-file" accept="image/*" required>
+          </div>
+          <div class="form-group">
+            <label for="prod-video-url">URL Video Demo (Video MP4 Direct Link)</label>
+            <input type="url" id="prod-video-url" placeholder="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4">
+          </div>
+          <button type="submit" class="btn">Tambah Produk ke Katalog</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ================= 2. PANEL PEMBELI (CUSTOMER) ================= -->
+    <section class="card" id="panel-pembeli">
+      <h2>Portal Pembeli</h2>
+
+      <!-- Form Login Pembeli -->
+      <div id="pembeli-login-sec" class="auth-box">
+        <form id="form-login-pembeli">
+          <div class="form-group">
+            <label>Nama Pembeli / User</label>
+            <input type="text" id="login-pembeli-name" placeholder="Masukkan nama Anda" required>
+          </div>
+          <button type="submit" class="btn">Masuk Toko</button>
+        </form>
+      </div>
+
+      <!-- Dashboard Pembeli (Hidden Default) -->
+      <div id="pembeli-dashboard" style="display: none;">
+        <div class="user-info-bar">
+          <span>Selamat datang, <b id="user-display-name">Pembeli</b>!</span>
+          <button id="btn-logout-pembeli" class="btn btn-danger" style="width: auto; padding: 6px 14px;">Ganti Akun</button>
+        </div>
+
+        <h3 style="margin-bottom: 16px; color: var(--secondary);">Katalog Produk</h3>
+        
+        <!-- Katalog Grid -->
+        <div id="catalog-grid" class="catalog-grid"></div>
+
+        <!-- Status Pesanan Interaktif -->
+        <div style="margin-top: 40px;">
+          <h3 style="margin-bottom: 16px; color: var(--secondary);">Pesanan Saya</h3>
+          <div id="order-list">
+            <p style="color: var(--text-light);">Belum ada pesanan aktif. Silakan pilih produk di atas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // DATA INITIAL (DUMMY METADATA LENGKAP)
+    let products = [
+      {
+        id: 1,
+        name: "Smartphone Premium Flagship",
+        desc: "Layar AMOLED 120Hz, RAM 12GB, Chipset Flagship, Kamera Utama 108MP.",
+        price: 12000000,
+        img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80",
+        video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+      },
+      {
+        id: 2,
+        name: "Laptop Ultrabook Pro",
+        desc: "Prosesor Generasi Terbaru, SSD 1TB NVMe, Baterai Tahan Hingga 15 Jam.",
+        price: 22000000,
+        img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&q=80",
+        video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+      }
+    ];
+
+    let orders = [];
+    let currentUser = null;
+
+    // SWITCH TAB AKSES (ADMIN / PEMBELI)
+    function switchTab(tab) {
+      document.getElementById('tab-pembeli').classList.toggle('active', tab === 'pembeli');
+      document.getElementById('tab-admin').classList.toggle('active', tab === 'admin');
+
+      document.getElementById('panel-pembeli').style.display = tab === 'pembeli' ? 'block' : 'none';
+      document.getElementById('panel-admin').style.display = tab === 'admin' ? 'block' : 'none';
+    }
+
+    // 1. SYSTEM LOGIN PEMBELI
+    const formLoginPembeli = document.getElementById('form-login-pembeli');
+    formLoginPembeli.addEventListener('submit', function(e) {
+      e.preventDefault();
+      currentUser = document.getElementById('login-pembeli-name').value;
+      
+      document.getElementById('user-display-name').textContent = currentUser;
+      document.getElementById('pembeli-login-sec').style.display = 'none';
+      document.getElementById('pembeli-dashboard').style.display = 'block';
+      
+      renderCatalog();
+      renderOrders();
+    });
+
+    document.getElementById('btn-logout-pembeli').addEventListener('click', function() {
+      currentUser = null;
+      document.getElementById('pembeli-login-sec').style.display = 'block';
+      document.getElementById('pembeli-dashboard').style.display = 'none';
+    });
+
+    // 2. SYSTEM LOGIN ADMIN
+    const formLoginAdmin = document.getElementById('form-login-admin');
+    formLoginAdmin.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = document.getElementById('login-admin-user').value;
+      const pass = document.getElementById('login-admin-pass').value;
+
+      if (user === "meila" && pass === "meila123") {
+        document.getElementById('admin-login-sec').style.display = 'none';
+        document.getElementById('admin-dashboard').style.display = 'block';
+        formLoginAdmin.reset();
+      } else {
+        alert("Username atau Password Admin Salah!");
+      }
+    });
+
+    document.getElementById('btn-logout-admin').addEventListener('click', function() {
+      document.getElementById('admin-login-sec').style.display = 'block';
+      document.getElementById('admin-dashboard').style.display = 'none';
+    });
+
+    // 3. TAMBAH PRODUK BARU (OLEH ADMIN)
+    const formAddProduct = document.getElementById('form-add-product');
+    formAddProduct.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('prod-name').value;
+      const desc = document.getElementById('prod-desc').value;
+      const price = document.getElementById('prod-price-num').value;
+      const video = document.getElementById('prod-video-url').value || "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+      const fileInput = document.getElementById('prod-img-file');
+      const file = fileInput.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const newProduct = {
+            id: Date.now(),
+            name: name,
+            desc: desc,
+            price: Number(price),
+            img: evt.target.result,
+            video: video
+          };
+
+          products.push(newProduct);
+          renderCatalog();
+          formAddProduct.reset();
+          alert("Produk baru berhasil disimpan ke dalam katalog!");
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // 4. RENDER KATALOG UNTUK PEMBELI
+    function renderCatalog() {
+      const catalogGrid = document.getElementById('catalog-grid');
+      catalogGrid.innerHTML = "";
+
+      products.forEach(prod => {
+        const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(prod.price);
+        
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div>
+            <img src="${prod.img}" alt="${prod.name}" class="product-img">
+            <div class="product-title">${prod.name}</div>
+            <div class="product-price">${formattedPrice}</div>
+            <div class="product-desc">${prod.desc}</div>
+            <video controls class="product-video">
+              <source src="${prod.video}" type="video/mp4">
+              Browser tidak mendukung pemutaran video.
+            </video>
+          </div>
+          <button class="btn-buy" onclick="buyProduct(${prod.id})">Beli Sekarang</button>
+        `;
+        catalogGrid.appendChild(card);
+      });
+    }
+
+    // 5. MEMBELI & MENGELOLA PESANAN
+    function buyProduct(productId) {
+      const prod = products.find(p => p.id === productId);
+      if (!prod) return;
+
+      const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
+      const newOrder = {
+        id: orderId,
+        user: currentUser,
+        productName: prod.name,
+        price: prod.price,
+        status: "Pesanan Belum Dibayar"
+      };
+
+      orders.push(newOrder);
+      renderOrders();
+      alert(`Pesanan ${prod.name} berhasil dibuat! Kode: #${orderId}`);
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const order = orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = newStatus;
+        renderOrders();
+      }
+    }
+
+    function getBadgeClass(status) {
+      switch (status) {
+        case 'Pesanan Belum Dibayar': return 'badge-pending';
+        case 'Pesanan Diproses': return 'badge-process';
+        case 'Pesanan Dikirim': return 'badge-shipped';
+        case 'Pesanan Selesai': return 'badge-done';
+        default: return 'badge-pending';
+      }
+    }
+
+    function renderOrders() {
+      const orderList = document.getElementById('order-list');
+      const userOrders = orders.filter(o => o.user === currentUser);
+
+      if (userOrders.length === 0) {
+        orderList.innerHTML = `<p style="color: var(--text-light);">Belum ada pesanan aktif. Silakan pilih produk di atas.</p>`;
+        return;
+      }
+
+      orderList.innerHTML = "";
+      userOrders.forEach(order => {
+        const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(order.price);
+        
+        const div = document.createElement('div');
+        div.className = 'order-status-card';
+        div.innerHTML = `
+          <div class="order-header">
+            <span>#${order.id} - ${order.productName}</span>
+            <span class="badge ${getBadgeClass(order.status)}">${order.status}</span>
+          </div>
+          <div>Total Biaya: <b>${formattedPrice}</b></div>
+          <div>
+            <select class="order-select" onchange="updateOrderStatus('${order.id}', this.value)">
+              <option value="Pesanan Belum Dibayar" ${order.status === 'Pesanan Belum Dibayar' ? 'selected' : ''}>Pesanan Belum Dibayar</option>
+              <option value="Pesanan Diproses" ${order.status === 'Pesanan Diproses' ? 'selected' : ''}>Pesanan Diproses</option>
+              <option value="Pesanan Dikirim" ${order.status === 'Pesanan Dikirim' ? 'selected' : ''}>Pesanan Dikirim</option>
+              <option value="Pesanan Selesai" ${order.status === 'Pesanan Selesai' ? 'selected' : ''}>Pesanan Selesai</option>
+            </select>
+          </div>
+        `;
+        orderList.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
