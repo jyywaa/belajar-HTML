@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GadgetStore Pro</title>
+  <style>
+    /* RESET & BASE STYLES */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f4f6f9;
+      color: #333;
+      padding-bottom: 40px;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+    header h1 {
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+    }
+    header p {
+      margin-top: 5px;
+      opacity: 0.9;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 15px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    /* CARDS (SECTIONS) */
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      padding: 25px;
+    }
+    .card h2 {
+      margin-bottom: 20px;
+      color: #1e3c72;
+      border-bottom: 2px solid #eef2f5;
+      padding-bottom: 10px;
+    }
+
+    /* FORM STYLES */
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .form-group input, 
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      font-size: 0.95rem;
+    }
+    .form-group input:focus, 
+    .form-group textarea:focus {
+      border-color: #2a5298;
+    }
+    .btn {
+      background-color: #2a5298;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      transition: background 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #1e3c72;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+    }
+    .btn-danger:hover {
+      background-color: #bd2130;
+    }
+
+    /* ADMIN LOGIN PANEL & DASHBOARD */
+    #admin-login-sec, #admin-dashboard, #customer-login-sec {
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .admin-header, .customer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    /* GRID KATALOG PEMBELI */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .product-card {
+      border: 1px solid #e1e8ed;
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #fff;
+      transition: transform 0.2s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-3px);
+    }
+    .product-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    .product-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .product-price {
+      font-size: 1.1rem;
+      color: #27ae60;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .product-desc {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    .product-video {
+      width: 100%;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      max-height: 150px;
+      background: #000;
+    }
+    .btn-buy {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      background-color: #27ae60;
+      color: white;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+      cursor: pointer;
+    }
+    .btn-buy:hover {
+      background-color: #219150;
+    }
+
+    /* STATUS PESANAN (UI CONTOH GAMBAR 2) */
+    .order-status-card {
+      background: #f8f9fa;
+      border-left: 4px solid #27ae60;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 15px;
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .badge {
+      background: #e1f5fe;
+      color: #0288d1;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .order-select {
+      margin-top: 8px;
+      padding: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER UTAMA -->
+  <header>
+    <h1>GadgetStore Pro</h1>
+    <p>Sistem E-Commerce Interaktif & Single-Page Platform</p>
+  </header>
+
+  <main class="container">
+
+    <!-- ================= 1. PANEL ADMINISTRATOR ================= -->
+    <section class="card" id="panel-admin">
+      <h2>Panel Administrator</h2>
+
+      <!-- Form Login Admin -->
+      <div id="admin-login-sec">
+        <form id="form-login">
+          <div class="form-group">
+            <label>Username Admin</label>
+            <input type="text" id="login-user" placeholder="Masukkan username" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="login-pass" placeholder="Masukkan password" required>
+          </div>
+          <button type="submit" class="btn">Login Admin</button>
+        </form>
+      </div>
+
+      <!-- Dashboard Input Produk (Hidden Default) -->
+      <div id="admin-dashboard" style="display: none;">
+        <div class="admin-header">
+          <span>Selamat datang, <b id="admin-name">meila</b>!</span>
+          <button id="btn-logout" class="btn btn-danger" style="width: auto; padding: 6px 12px;">Logout Admin</button>
+        </div>
+
+        <form id="form-add-product">
+          <div class="form-group">
+            <label for="prod-name">Nama Produk</label>
+            <input type="text" id="prod-name" placeholder="Contoh: Smartphone Premium" required>
+          </div>
+          <div class="form-group">
+            <label for="prod-desc">Deskripsi & Harga Produk</label>
+            <textarea id="prod-desc" rows="3" placeholder="Masukkan deskripsi spesifikasi dan harga (Contoh: Rp 12.000.000 - RAM 12GB, Display 120Hz)" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="prod-price-num">Harga Nominal (Angka Saja untuk Sistem)</label>
+            <input type="number" id="prod-price-num" placeholder="Contoh: 12000000" required>
+          </div>
+          <div class="form-group">
+            <label for="prod-img-file">Upload Foto Produk (Gambar Local/Device)</label>
+            <input type="file" id="prod-img-file" accept="image/*" required>
+          </div>
+          <div class="form-group">
+            <label for="prod-video-url">URL Video Demo (Video MP4 / Direct Link)</label>
+            <input type="url" id="prod-video-url" placeholder="https://www.w3schools.com/html/mov_bbb.mp4">
+          </div>
+          <button type="submit" class="btn">Simpan Produk ke Database</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ================= 2. PANEL PEMBELI (CUSTOMER) ================= -->
+    <section class="card" id="panel-pembeli">
+      <h2>Katalog Produk (Panel Pembeli)</h2>
+      
+      <!-- Halaman Login Pembeli (Semua Orang Bebas Masuk) -->
+      <div id="customer-login-sec">
+        <form id="form-customer-login">
+          <div class="form-group">
+            <label>Nama Pembeli</label>
+            <input type="text" id="cust-name" placeholder="Masukkan Nama Anda" required>
+          </div>
+          <div class="form-group">
+            <label>Nomor Telepon / WhatsApp</label>
+            <input type="tel" id="cust-phone" placeholder="Contoh: 0856332524823" required>
+          </div>
+          <button type="submit" class="btn" style="background-color: #27ae60;">Masuk Sebagai Pembeli</button>
+        </form>
+      </div>
+
+      <!-- Dashboard Pembeli (Hidden Default Sampai Pembeli Login) -->
+      <div id="customer-dashboard" style="display: none;">
+        <div class="customer-header">
+          <span>Halo, <b id="display-cust-name">Pembeli</b>! Masuk sebagai Customer.</span>
+          <button id="btn-cust-logout" class="btn btn-danger" style="width: auto; padding: 6px 12px;">Logout Pembeli</button>
+        </div>
+
+        <!-- Katalog Grid -->
+        <div id="catalog-grid" class="catalog-grid">
+          <!-- Produk akan dirender lewat JS -->
+        </div>
+
+        <!-- Status Pesanan Interaktif (Sesuai Konsep Gambar 2) -->
+        <div style="margin-top: 40px;">
+          <h3>Status & Riwayat Pesanan Pembeli</h3>
+          <div id="order-list">
+            <p style="color: #777; margin-top: 10px;">Belum ada pesanan aktif. Klik <b>"Beli Sekarang"</b> pada katalog produk di atas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // DATA DUMMY AWAL PRODUK
+    let products = [
+      {
+        id: 1,
+        name: "Smartphone Premium",
+        desc: "Layar 120Hz, RAM 12GB, Chipset Flagship, Kamera 108MP.",
+        price: 12000000,
+        img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80",
+        video: "https://www.w3schools.com/html/mov_bbb.mp4"
+      },
+      {
+        id: 2,
+        name: "Laptop Ultra",
+        desc: "Prosesor Intel i9, SSD 1TB, Baterai Tahan 15 Jam.",
+        price: 22000000,
+        img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&q=80",
+        video: "https://www.w3schools.com/html/mov_bbb.mp4"
+      }
+    ];
+
+    let orders = [];
+    let activeCustomer = null;
+
+    // ELEMEN DOM
+    const formLogin = document.getElementById('form-login');
+    const adminLoginSec = document.getElementById('admin-login-sec');
+    const adminDashboard = document.getElementById('admin-dashboard');
+    const btnLogout = document.getElementById('btn-logout');
+    const formAddProduct = document.getElementById('form-add-product');
+    const catalogGrid = document.getElementById('catalog-grid');
+    const orderList = document.getElementById('order-list');
+
+    // DOM PEMBELI
+    const formCustomerLogin = document.getElementById('form-customer-login');
+    const customerLoginSec = document.getElementById('customer-login-sec');
+    const customerDashboard = document.getElementById('customer-dashboard');
+    const displayCustName = document.getElementById('display-cust-name');
+    const btnCustLogout = document.getElementById('btn-cust-logout');
+
+    // 1. FITUR LOGIN ADMIN ( meila / meila123 )
+    formLogin.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const user = document.getElementById('login-user').value;
+      const pass = document.getElementById('login-pass').value;
+
+      if (user === "meila" && pass === "meila123") {
+        alert("Login Admin Berhasil!");
+        adminLoginSec.style.display = "none";
+        adminDashboard.style.display = "block";
+        formLogin.reset();
+      } else {
+        alert("Username atau Password Admin Salah!");
+      }
+    });
+
+    btnLogout.addEventListener('click', function() {
+      adminLoginSec.style.display = "block";
+      adminDashboard.style.display = "none";
+    });
+
+    // 2. FITUR LOGIN PEMBELI (Untuk Semua Orang Bebas Masuk)
+    formCustomerLogin.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const custName = document.getElementById('cust-name').value;
+      const custPhone = document.getElementById('cust-phone').value;
+
+      activeCustomer = { name: custName, phone: custPhone };
+      displayCustName.textContent = custName;
+
+      customerLoginSec.style.display = "none";
+      customerDashboard.style.display = "block";
+      renderCatalog();
+    });
+
+    btnCustLogout.addEventListener('click', function() {
+      activeCustomer = null;
+      customerLoginSec.style.display = "block";
+      customerDashboard.style.display = "none";
+      formCustomerLogin.reset();
+    });
+
+    // 3. TAMBAH PRODUK OLEH ADMIN (FUNGSI UPLOAD FOTO LOCAL)
+    formAddProduct.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('prod-name').value;
+      const desc = document.getElementById('prod-desc').value;
+      const price = document.getElementById('prod-price-num').value;
+      const video = document.getElementById('prod-video-url').value || "https://www.w3schools.com/html/mov_bbb.mp4";
+      const fileInput = document.getElementById('prod-img-file');
+      const file = fileInput.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const newProduct = {
+            id: Date.now(),
+            name: name,
+            desc: desc,
+            price: Number(price),
+            img: evt.target.result, // Mengubah file upload menjadi URL Data Base64
+            video: video
+          };
+
+          products.push(newProduct);
+          renderCatalog();
+          formAddProduct.reset();
+          alert("Produk berhasil disimpan ke Database!");
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // 4. RENDER KATALOG PEMBELI
+    function renderCatalog() {
+      catalogGrid.innerHTML = "";
+      products.forEach(prod => {
+        const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(prod.price);
+        
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <div>
+            <img src="${prod.img}" alt="${prod.name}" class="product-img">
+            <div class="product-title">${prod.name}</div>
+            <div class="product-price">${formattedPrice}</div>
+            <div class="product-desc">${prod.desc}</div>
+            <video controls class="product-video">
+              <source src="${prod.video}" type="video/mp4">
+              Browser Anda tidak mendukung video tag.
+            </video>
+          </div>
+          <a href="#order-list" class="btn-buy" onclick="buyProduct(${prod.id})">Beli Sekarang</a>
+        `;
+        catalogGrid.appendChild(card);
+      });
+    }
+
+    // 5. FITUR BELI & MANAJEMEN STATUS PESANAN
+    function buyProduct(productId) {
+      const prod = products.find(p => p.id === productId);
+      if (!prod) return;
+
+      const orderId = "AZR-" + Math.floor(100000 + Math.random() * 900000);
+      const customerInfo = activeCustomer ? `${activeCustomer.name} (${activeCustomer.phone})` : "Pembeli Umum";
+      
+      const newOrder = {
+        id: orderId,
+        productName: prod.name,
+        price: prod.price,
+        customer: customerInfo,
+        status: "Pesanan Belum Dibayar"
+      };
+
+      orders.push(newOrder);
+      renderOrders();
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const order = orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = newStatus;
+        renderOrders();
+      }
+    }
+
+    function renderOrders() {
+      if (orders.length === 0) {
+        orderList.innerHTML = `<p style="color: #777; margin-top: 10px;">Belum ada pesanan aktif. Klik <b>"Beli Sekarang"</b> pada katalog produk di atas.</p>`;
+        return;
+      }
+
+      orderList.innerHTML = "";
+      orders.forEach(order => {
+        const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(order.price);
+        
+        const div = document.createElement('div');
+        div.className = 'order-status-card';
+        div.innerHTML = `
+          <div class="order-header">
+            <span>#${order.id} - ${order.productName}</span>
+            <span class="badge">${order.status}</span>
+          </div>
+          <div style="font-size: 0.85rem; color: #555; margin-bottom: 5px;">Pemesanan Oleh: <b>${order.customer}</b></div>
+          <div>Total Bayar: <b>${formattedPrice}</b></div>
+          <div style="margin-top: 10px;">
+            <label style="font-size: 0.85rem;">Ubah/Cek Status Pesanan:</label><br>
+            <select class="order-select" onchange="updateOrderStatus('${order.id}', this.value)">
+              <option value="Pesanan Belum Dibayar" ${order.status === 'Pesanan Belum Dibayar' ? 'selected' : ''}>Pesanan Belum Dibayar</option>
+              <option value="Pesanan Diproses" ${order.status === 'Pesanan Diproses' ? 'selected' : ''}>Pesanan Diproses</option>
+              <option value="Pesanan Dikirim" ${order.status === 'Pesanan Dikirim' ? 'selected' : ''}>Pesanan Dikirim</option>
+              <option value="Pesanan Selesai" ${order.status === 'Pesanan Selesai' ? 'selected' : ''}>Pesanan Selesai</option>
+            </select>
+          </div>
+        `;
+        orderList.appendChild(div);
+      });
+    }
+
+    // INITIAL RENDER
+    renderCatalog();
+  </script>
+</body>
+</html>
