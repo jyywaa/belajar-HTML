@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MochiShop</title>
+  <link rel="stylesheet" href="style.css"> <!-- sesuaikan jika ada stylesheet terpisah -->
+  <style>
+    /* Styling Modal Custom Estetik MochiShop */
+    .mochi-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .mochi-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mochi-modal-box {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(255, 105, 180, 0.2);
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .mochi-modal-overlay.active .mochi-modal-box {
+      transform: translateY(0);
+    }
+
+    .mochi-modal-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #ff3385;
+      margin-bottom: 12px;
+    }
+
+    .mochi-modal-input {
+      width: 100%;
+      padding: 10px 14px;
+      margin: 15px 0;
+      border: 2px solid #ffccd5;
+      border-radius: 10px;
+      outline: none;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    .mochi-modal-input:focus {
+      border-color: #ff3385;
+    }
+
+    .mochi-modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 15px;
+    }
+
+    .mochi-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .mochi-btn-cancel {
+      background-color: #f0f0f0;
+      color: #555;
+    }
+
+    .mochi-btn-primary {
+      background-color: #ff3385;
+      color: white;
+    }
+
+    .mochi-btn-primary:hover {
+      background-color: #e6005c;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Bagian konten utama shop & admin tetap seperti sebelumnya -->
+
+  <!-- MODAL CUSTOM UNTUK EDIT HARGA & NOTIFIKASI -->
+  <div id="mochiModal" class="mochi-modal-overlay">
+    <div class="mochi-modal-box">
+      <div id="modalTitle" class="mochi-modal-title">Edit Harga Barang</div>
+      <p id="modalDescription" style="color: #666; font-size: 0.9rem; margin: 0;"></p>
+      <input type="number" id="modalInput" class="mochi-modal-input" placeholder="Masukkan harga baru..." />
+      <div class="mochi-modal-actions">
+        <button id="modalBtnCancel" class="mochi-btn mochi-btn-cancel">Batal</button>
+        <button id="modalBtnConfirm" class="mochi-btn mochi-btn-primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
