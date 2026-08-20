@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MochiShop Web App</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background-color: #f8f9fa; color: #333; }
+
+    /* HEADER UTAMA */
+    header {
+      background-color: #ff3385; color: white; padding: 12px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-size: 1.4rem; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+    .search-bar { width: 45%; max-width: 300px; padding: 6px 12px; border-radius: 20px; border: none; outline: none; }
+    .btn-keluar { background: none; border: none; color: white; font-weight: bold; cursor: pointer; }
+
+    /* KATEGORI BAR */
+    .categories { display: flex; gap: 10px; padding: 12px 20px; background: white; overflow-x: auto; }
+    .cat-btn { padding: 6px 16px; border-radius: 15px; border: none; background: #ffe6f0; color: #ff3385; font-weight: bold; cursor: pointer; }
+    .cat-btn.active { background: #ff3385; color: white; }
+
+    /* BANNER */
+    .banner { background: #ff3385; color: white; text-align: center; padding: 8px; font-size: 0.85rem; font-weight: bold; margin: 10px 20px; border-radius: 10px; }
+
+    /* LAYOUT ADMIN & KATALOG UTAMA */
+    .main-container { display: flex; min-height: calc(100vh - 120px); }
+
+    /* SIDEBAR NAVIGATION */
+    .sidebar { width: 240px; background: #ff3385; padding: 15px 0; color: white; flex-shrink: 0; }
+    .sidebar-menu { list-style: none; }
+    .sidebar-menu li { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 0.95rem; }
+    .sidebar-menu li.active, .sidebar-menu li:hover { background: white; color: #ff3385; border-radius: 20px 0 0 20px; font-weight: bold; }
+
+    /* KONTEN UTAMA */
+    .content-area { flex-grow: 1; padding: 20px; overflow-x: auto; }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    /* GRID KATALOG MHOCHISHOP */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+    .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; }
+    .badge-discount { position: absolute; top: 10px; left: 10px; background: #ff3385; color: white; font-size: 0.7rem; padding: 3px 8px; border-radius: 8px; font-weight: bold; }
+    .product-img { width: 100%; height: 130px; object-fit: cover; background: #eee; }
+    .product-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .product-title { font-size: 0.95rem; font-weight: bold; margin-bottom: 4px; }
+    .product-price { color: #ff3385; font-weight: bold; font-size: 0.9rem; }
+    .product-old-price { color: #888; text-decoration: line-through; font-size: 0.75rem; margin-left: 4px; }
+    .product-meta { font-size: 0.75rem; color: #666; margin: 4px 0 10px 0; }
+    .action-btns { display: flex; gap: 6px; }
+    .btn-cart { background: #ffe6f0; color: #ff3385; border: none; padding: 6px; border-radius: 6px; cursor: pointer; flex: 1; font-size: 0.8rem; font-weight: bold; }
+    .btn-buy { background: #ff3385; color: white; border: none; padding: 6px; border-radius: 6px; cursor: pointer; flex: 1; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+    /* TABEL VIEW & EDIT HARGA */
+    .table-card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background: #fff0f5; color: #ff3385; padding: 10px; font-size: 0.85rem; }
+    td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+    .btn-edit { background: #ffc107; border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; color: #333; }
+
+    /* MODAL CUSTOM UNTUK EDIT HARGA & NOTIFIKASI ESTETIK */
+    .mochi-modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4); display: none; align-items: center; justify-content: center; z-index: 999;
+    }
+    .mochi-modal-overlay.active { display: flex; }
+    .mochi-modal-box { background: white; padding: 20px; border-radius: 16px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+    .mochi-modal-title { color: #ff3385; font-weight: bold; margin-bottom: 8px; }
+    .mochi-modal-input { width: 100%; padding: 10px; border: 1.5px solid #ffccd5; border-radius: 8px; margin: 12px 0; outline: none; font-size: 1rem; }
+    .mochi-modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .m-btn { padding: 8px 16px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .m-btn-cancel { background: #eee; color: #666; }
+    .m-btn-confirm { background: #ff3385; color: white; }
+
+    /* FOOTER MOBILE NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #eee; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; color: #666; text-decoration: none; cursor: pointer; }
+    .nav-item.active { color: #ff3385; font-weight: bold; }
+    .badge { background: #ff3385; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.65rem; position: absolute; top: 2px; right: 28%; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">🍡 MochiShop</div>
+    <input type="text" class="search-bar" placeholder="Cari ayam geprek, cardigan...">
+    <button class="btn-keluar" onclick="pindahHalaman('halamanLogin')">Keluar</button>
+  </header>
+
+  <!-- KATEGORI BANNER -->
+  <div class="categories">
+    <button class="cat-btn active">Home</button>
+    <button class="cat-btn">MochiFood</button>
+    <button class="cat-btn">MochiOutfit</button>
+    <button class="cat-btn">Promo</button>
+  </div>
+  <div class="banner">🎉 FLASH SALE 9.9 - DISKON UP TO 90% 🎉</div>
+
+  <!-- CONTAINER KONTEN LENGKAP -->
+  <div class="main-container">
+    
+    <!-- SIDEBAR ADMIN MENU -->
+    <div class="sidebar">
+      <ul class="sidebar-menu">
+        <li onclick="pindahMenu('menuKatalog', this)">🏠 Home / Shop</li>
+        <li onclick="pindahMenu('menuDashboard', this)">📈 Dashboard</li>
+        <li onclick="pindahMenu('menuKelola', this)">📦 Kelola Barang</li>
+        <li class="active" onclick="pindahMenu('menuEditHarga', this)">🏷️ View & Edit Harga</li>
+        <li onclick="pindahMenu('menuSupplier', this)">🚚 Kelola Supplier</li>
+        <li onclick="pindahMenu('menuPembelian', this)">🛒 Pembelian & Stok</li>
+        <li onclick="pindahMenu('menuPengiriman', this)">📋 Status Pengiriman</li>
+        <li onclick="pindahMenu('menuLaporan', this)">📄 Laporan Penjualan</li>
+      </ul>
+    </div>
+
+    <!-- MAIN DISPLAY AREAS -->
+    <div class="content-area">
+
+      <!-- 1. HALAMAN KATALOG SHOP UTAMA (Rekomendasi Mochi) -->
+      <div id="menuKatalog" class="page-section">
+        <h3 style="margin-bottom: 15px; color:#333;">Rekomendasi Untuk Mochi</h3>
+        <div class="product-grid" id="katalogProdukContainer">
+          <!-- Diisi via JS -->
+        </div>
+      </div>
+
+      <!-- 2. HALAMAN VIEW & EDIT HARGA BARANG -->
+      <div id="menuEditHarga" class="page-section active">
+        <h2 style="color: #ff3385; margin-bottom: 15px;">View & Edit Harga Barang</h2>
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Barang</th>
+                <th>Harga Beli</th>
+                <th>Harga Jual</th>
+                <th>Aksi Edit</th>
+              </tr>
+            </thead>
+            <tbody id="tabelHargaBody">
+              <!-- Diisi otomatis oleh JS dengan nomor urut 1, 2, 3... -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. HALAMAN SEKSI ADMIN LAINNYA -->
+      <div id="menuDashboard" class="page-section"><h2>Dashboard MochiShop</h2><p>Ringkasan performa toko.</p></div>
+      <div id="menuKelola" class="page-section"><h2>Kelola Barang</h2><p>Tambah dan ubah daftar produk MochiShop.</p></div>
+      <div id="menuSupplier" class="page-section"><h2>Kelola Supplier</h2><p>Daftar pemasok produk.</p></div>
+      <div id="menuPembelian" class="page-section"><h2>Pembelian & Stok</h2><p>Data stok masuk dan riwayat pembelian.</p></div>
+      <div id="menuPengiriman" class="page-section"><h2>Status Pengiriman</h2><p>Status pesanan pelanggan.</p></div>
+      <div id="menuLaporan" class="page-section"><h2>Laporan Penjualan</h2><p>Rekapan keuangan dan transaksi.</p></div>
+
+      <!-- 4. HALAMAN CHECKOUT (Tujuan Tombol Beli) -->
+      <div id="halamanCheckout" class="page-section">
+        <h2 style="color: #ff3385; margin-bottom: 15px;">Halaman Check Out</h2>
+        <div class="table-card" id="ringkasanCheckout">
+          <!-- Item ringkasan -->
+        </div>
+      </div>
+
+      <!-- 5. HALAMAN LOGIN -->
+      <div id="halamanLogin" class="page-section">
+        <div style="max-width: 300px; margin: 40px auto; text-align: center; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+          <h2 style="color: #ff3385; margin-bottom: 15px;">Login MochiShop</h2>
+          <input type="text" placeholder="Username" class="mochi-modal-input">
+          <input type="password" placeholder="Password" class="mochi-modal-input">
+          <button class="m-btn m-btn-confirm" style="width: 100%; margin-top: 10px;" onclick="pindahMenu('menuKatalog', document.querySelectorAll('.sidebar-menu li')[0])">Masuk</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NAVIGATION BAR BAWAH (MOBILE) -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="pindahMenu('menuKatalog', document.querySelectorAll('.sidebar-menu li')[0])">
+      <span>🏠</span><span>Home</span>
+    </div>
+    <div class="nav-item" style="position: relative;" onclick="pindahHalaman('halamanCheckout')">
+      <span class="badge" id="cartBadge">0</span>
+      <span>🛒</span><span>Keranjang</span>
+    </div>
+    <div class="nav-item" onclick="pindahMenu('menuEditHarga', document.querySelectorAll('.sidebar-menu li')[3])">
+      <span>👤</span><span>Akun / Admin</span>
+    </div>
+  </div>
+
+  <!-- MODAL EDIT HARGA ESTETIK (PENGGANTI POPUP BROWSER GOOGLE) -->
+  <div id="mochiModal" class="mochi-modal-overlay">
+    <div class="mochi-modal-box">
+      <div id="modalTitle" class="mochi-modal-title">Edit Harga Barang</div>
+      <p id="modalDescription" style="color: #666; font-size: 0.85rem;"></p>
+      <input type="number" id="modalInput" class="mochi-modal-input" placeholder="Harga baru..." />
+      <div class="mochi-modal-actions">
+        <button id="modalBtnCancel" class="m-btn m-btn-cancel">Batal</button>
+        <button id="modalBtnConfirm" class="m-btn m-btn-confirm">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
